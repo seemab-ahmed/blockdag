@@ -1,10 +1,6 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Header from "@/component/Header";
-import Footer from "@/component/footer";
-import Future from "@/component/build-future";
 import { Inter } from "next/font/google";
-import AOSWrapper from "@/component/AOSWrapper"; 
 
 const inter = Inter({
   subsets: ["latin"],
@@ -12,20 +8,15 @@ const inter = Inter({
 });
 
 export const metadata = {
-  title: "Skills 2 Evolve",
-  description: "Skills 2 Evolve",
+  title: "Blockdag",
+  description: "Blockdag is a decentralized, scalable, and secure blockchain platform designed for high-performance applications.",
 };
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en" data-arp="">
       <body className={`${inter.variable} antialiased`} cz-shortcut-listen="true">
-        <AOSWrapper>
-          <Header />
           {children}
-          <Future />
-          <Footer />
-        </AOSWrapper>
       </body>
     </html>
   );
