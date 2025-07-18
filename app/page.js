@@ -1,5 +1,5 @@
 "use client";
-import { MainComponent } from "@/component/main";
+import { Login } from "@/component/login";
 import Head from "next/head";
 export default function Home() {
   return (
@@ -48,7 +48,7 @@ export default function Home() {
           content="https://skills2evolve.com/twitter-image.jpg"
         />
       </Head>
-      <MainComponent />
+      <Login />
     </>
   );
 }

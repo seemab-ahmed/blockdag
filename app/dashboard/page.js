@@ -1,14 +1,5 @@
-import { Dashboard } from "@/component/dashboard";
-import React from "react";
+import { MainArea } from "@/component/MainArea";
 
-const page = () => {
-  return (
-    <div className="__className_ee1788">
-      <main data-sidebar="deactive">
-        <Dashboard />
-      </main>
-    </div>
-  );
-};
-
-export default page;
+export default function DashboardHome() {
+  return <MainArea />;
+}

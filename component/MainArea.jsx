@@ -7,7 +7,7 @@ export const MainArea = () => {
   const [amount, setAmount] = useState("");
   console.log('activeTab:', activeTab);
   return (
-    <>
+    <div className="style_overview__iPKe6">
     <RankProgress />
     <div className="style_balanceSection__K0yQq">
         <div className="style_balances__lxOoR">
@@ -198,6 +198,15 @@ export const MainArea = () => {
         </div>
         {/* <div className="wallet_shouldLoginOverlay__6lhDi"></div> */}
       </div>
-    </>
+      <div className="transactions_lastTransactionsArea__DfC1R">
+      <p className="style_text__Z44aT style_lg__AdDq0 style_font-700__9q48B">
+        Last Transactions
+      </p>
+      <div className="transactions_lastList__zrOK_">
+        <p>There are no finalized transactions yet.</p>
+      </div>
+      
+    </div>
+    </div>
   )
 }
