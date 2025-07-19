@@ -1,7 +1,7 @@
 'use client'
 import React, { useState } from 'react';
 
-const BuyMiner = () => {
+const BuyMiner = ({handleClickModal}) => {
   const [activePaymentMethod, setActivePaymentMethod] = useState('ETH');
   const [minerCounts, setMinerCounts] = useState({
     x10: 0,
@@ -186,7 +186,7 @@ const BuyMiner = () => {
         
         <div className="wallet_otherMethods__BOKMM">
           <div className="wallet_otherCryptos__2TkU1">
-            <p>
+            <p onClick={handleClickModal}>
               <img alt="Bitcoin" loading="lazy" width="24" height="24" decoding="async" src="https://purchase3.blockdag.network/images/coins/btc.svg" style={{ color: 'transparent' }} />
               <img alt="Tether-Tron" loading="lazy" width="24" height="24" decoding="async" src="https://purchase3.blockdag.network/images/coins/usdttrc20.svg" style={{ color: 'transparent' }} />
               <img alt="Tether USD (BSC)" loading="lazy" width="24" height="24" decoding="async" src="https://purchase3.blockdag.network/images/coins/usdtbsc.svg" style={{ color: 'transparent' }} />

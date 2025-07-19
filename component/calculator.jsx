@@ -1,6 +1,5 @@
 'use client';
-import React, { useState } from 'react';
-
+import React, { useState, useRef, useEffect } from 'react';
 
 const Calculator = () => {
   const [activeTab, setActiveTab] = useState('coin');
@@ -9,6 +8,15 @@ const Calculator = () => {
   const [sliderValue, setSliderValue] = useState(64);
   const [stage, setStage] = useState(29);
   const [price, setPrice] = useState('0.0276');
+  const [dragging, setDragging] = useState(false);
+
+  const barRef = useRef(null);
+
+  // Update stage and price based on slider value
+  useEffect(() => {
+    setStage(Math.floor(sliderValue / 3.5));
+    setPrice((0.01 + (sliderValue * 0.0005)).toFixed(4));
+  }, [sliderValue]);
 
   const handleBdagChange = (e) => {
     setBdagAmount(e.target.value);
@@ -20,25 +28,54 @@ const Calculator = () => {
     // Add conversion logic here if needed
   };
 
-  const handleSliderChange = (e) => {
-    const value = parseInt(e.target.value);
-    setSliderValue(value);
-    // Update stage and price based on slider value
-    // This is just an example - adjust according to your logic
-    setStage(Math.floor(value / 3.5));
-    setPrice((0.01 + (value * 0.0005)).toFixed(4));
+  // Drag logic for custom slider
+  const startDrag = (e) => {
+    setDragging(true);
+    document.body.style.userSelect = "none";
+    moveThumb(e);
   };
+
+  const stopDrag = () => {
+    setDragging(false);
+    document.body.style.userSelect = "";
+  };
+
+  const moveThumb = (e) => {
+    if (!barRef.current) return;
+    const rect = barRef.current.getBoundingClientRect();
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    let percent = ((clientX - rect.left) / rect.width) * 100;
+    percent = Math.max(0, Math.min(100, percent));
+    setSliderValue(Math.round(percent));
+  };
+
+  useEffect(() => {
+    if (dragging) {
+      const onMove = (e) => moveThumb(e);
+      const onUp = () => stopDrag();
+      window.addEventListener('mousemove', onMove);
+      window.addEventListener('touchmove', onMove);
+      window.addEventListener('mouseup', onUp);
+      window.addEventListener('touchend', onUp);
+      return () => {
+        window.removeEventListener('mousemove', onMove);
+        window.removeEventListener('touchmove', onMove);
+        window.removeEventListener('mouseup', onUp);
+        window.removeEventListener('touchend', onUp);
+      };
+    }
+  }, [dragging]);
 
   return (
     <div className="style_calculator__5UHYM">
       <div className="style_tabs__S8H6b">
-        <div 
+        <div
           className={`style_tabItem__JsB2S ${activeTab === 'coin' ? 'style_active__1Yrok' : ''}`}
           onClick={() => setActiveTab('coin')}
         >
           <span>Coin Amount<span className="d-md"> Calculator</span></span>
         </div>
-        <div 
+        <div
           className={`style_tabItem__JsB2S ${activeTab === 'mining' ? 'style_active__1Yrok' : ''}`}
           onClick={() => setActiveTab('mining')}
         >
@@ -59,10 +96,10 @@ const Calculator = () => {
                 <p>BDAG</p>
                 <div className="style_input__d5JsO">
                   <div className="style_controller__nvybk">
-                    <input 
-                      inputMode="numeric" 
-                      maxLength="18" 
-                      placeholder="0.00" 
+                    <input
+                      inputMode="numeric"
+                      maxLength="18"
+                      placeholder="0.00"
                       value={bdagAmount}
                       onChange={handleBdagChange}
                     />
@@ -77,8 +114,8 @@ const Calculator = () => {
                 <p>$</p>
                 <div className="style_input__d5JsO">
                   <div className="style_controller__nvybk">
-                    <input 
-                      value={usdAmount} 
+                    <input
+                      value={usdAmount}
                       onChange={handleUsdChange}
                       readOnly // Remove this if you want it to be editable
                     />
@@ -92,27 +129,47 @@ const Calculator = () => {
             <p className="style_text__Z44aT style_sm__RimS5">
               Move the slider to see how much your <b>BDAG</b> will be worth at different price targets!
             </p>
-            <div className="style_bar__V59_K">
-              <div 
-                className="style_progress__cgEf3" 
-                style={{ width: `${sliderValue}%` }}
-              >
-                <span className="style_percent__6raBl">{sliderValue}%</span>
-              </div>
-              <input
-                type="range"
-                min="0"
-                max="100"
-                value={sliderValue}
-                onChange={handleSliderChange}
-                className="style_thumb__HR41y"
-                tabIndex="-1"
-              />
-              <div 
-                className="style_remaining__drxK_" 
-                style={{ width: `${100 - sliderValue}%` }}
-              ></div>
-            </div>
+            <div
+  className="style_bar__V59_K"
+  ref={barRef}
+  style={{ position: "relative" }}
+  onMouseDown={e => startDrag(e)}
+  onTouchStart={e => startDrag(e)}
+>
+  <div
+    className="style_progress__cgEf3"
+    style={{ width: `${sliderValue}%` }}
+  ></div>
+  <div
+    className="style_thumb__HR41y"
+    tabIndex={-1}
+    style={{
+      position: "absolute",
+      left: `calc(${sliderValue}% - 16px)`,
+      top: 0,
+      zIndex: 2,
+      cursor: "pointer"
+    }}
+    onMouseDown={startDrag}
+    onTouchStart={startDrag}
+  ></div>
+  <span
+    className="style_percent__6raBl"
+    style={{
+      position: "absolute",
+      left: `calc(${sliderValue}% - 16px)`,
+      top: "-28px", // adjust as needed
+      zIndex: 3,
+      whiteSpace: "nowrap"
+    }}
+  >
+    {sliderValue}%
+  </span>
+  <div
+    className="style_remaining__drxK_"
+    style={{ width: `${100 - sliderValue}%` }}
+  ></div>
+</div>
           </div>
 
           <div className="style_selected__TZOjj">
