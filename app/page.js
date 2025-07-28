@@ -3,6 +3,7 @@ import { Login } from "../component/login";
 import Head from "next/head";
 import { ThirdwebProvider } from "thirdweb/react";
 import { createThirdwebClient } from "thirdweb";
+import ConnectOnly from "../component/ConnectOnly";
 
 const client = createThirdwebClient({
   clientId: "39b118976e9e817bc3799d54ddf74337",
@@ -57,7 +58,8 @@ export default function Home() {
       <ThirdwebProvider client={client}
        supportedChains={["ethereum", "polygon", "binance", "arbitrum"]}
       >
-        <Login />
+        {/* <Login /> */}
+        <ConnectOnly />
       </ThirdwebProvider>
     </>
   );

@@ -1,9 +1,10 @@
 "use client";
 
 import { useActiveWallet, useActiveWalletConnectionStatus } from "thirdweb/react";
+import { createWallet, walletConnect } from "@thirdweb-dev/react";
 import { createThirdwebClient } from "thirdweb";
 import { ConnectButton } from "thirdweb/react";
-import { createWallet } from "thirdweb/wallets";
+// import { createWallet } from "thirdweb/wallets";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
@@ -12,9 +13,10 @@ const client = createThirdwebClient({
 });
 
 const wallets = [
+  walletConnect(), // this is what enables the QR modal
   createWallet("com.trustwallet.app"),
   createWallet("io.metamask"),
-  createWallet("app.pluswallet"),
+  createWallet("app.pluuswallet"),
   createWallet("com.binance.wallet"),
   createWallet("com.coinbase.wallet"),
 ];
