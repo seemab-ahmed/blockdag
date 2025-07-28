@@ -129,7 +129,7 @@ const Profile = () => {
                     </linearGradient>
                   </defs>
                   <path d="M 0 0 L 150 0 A 150 150 0 0 1 -74.97279136480131 129.91951568170953 Z" fill="url(#orangeGradient)" stroke="#000" strokeWidth="1"></path>
-                  <text x="50.00906872264892" y="86.59730391584588" fill="#FFF" fontSize="18" fontWeight="bold" textAnchor="middle" dominantBaseline="middle">0.0%</text>
+                  <text x="50.00906872264892" y="86.59730391584588" fill="#FFF" fontSize="18" fontWeight="bold" textAnchor="middle" dominantBaseline="middle">49.0%</text>
                   <path d="M 0 0 L -74.97279136480131 129.91951568170953 A 150 150 0 0 1 -75.05440739959964 -129.87238324561122 Z" fill="url(#purpleGradient)" stroke="#000" strokeWidth="1"></path>
                   <text x="-99.99999506519785" y="0.031415926019190236" fill="#FFF" fontSize="18" fontWeight="bold" textAnchor="middle" dominantBaseline="middle">0.0%</text>
                   <path d="M 0 0 L -75.05440739959964 -129.87238324561122 A 150 150 0 0 1 149.99997039118776 -0.09424777340662932 Z" fill="#38CDC1" stroke="#000" strokeWidth="1"></path>

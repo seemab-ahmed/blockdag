@@ -1,4 +1,6 @@
+'use client'
 import React, { useEffect, useState } from 'react'
+import ConnectOnly from './ConnectOnly';
 
 export const Login = () => {
 
@@ -15,6 +17,16 @@ export const Login = () => {
       window.removeEventListener('mousemove', handleMouseMove);
     };
   }, []);
+
+  const [sheetData, setSheetData] = useState([]);
+
+  // const getData =() => {
+  //   fetch('/api/sheet')
+  //     .then(res => res.json())
+  //     .then(data => setSheetData(data));
+  // };
+
+  // console.log({sheetData});
   return (
      <div className="login_login__J2ObG __className_ee1788 modalActive">
   <div className="login_loginBox___rC_f">
@@ -31,9 +43,10 @@ export const Login = () => {
       <a className="style_button__C9H72 style_transparent-dark__hThHh" href="/">
         Go Home<span className="style_wrap__yFGLp"></span>
       </a>
-      <button type="button" className="style_button__C9H72 style_primary__FoPQF">
+      {/* <button onClick={getData} className="style_button__C9H72 style_primary__FoPQF">
         Connect Wallet<span className="style_wrap__yFGLp"></span>
-      </button>
+      </button> */}
+      <ConnectOnly />
     </div>
   </div>
   <div className="login_overlay__2wnae" 

@@ -1,6 +1,12 @@
 "use client";
-import { Login } from "@/component/login";
+import { Login } from "../component/login";
 import Head from "next/head";
+import { ThirdwebProvider } from "thirdweb/react";
+import { createThirdwebClient } from "thirdweb";
+
+const client = createThirdwebClient({
+  clientId: "39b118976e9e817bc3799d54ddf74337",
+});
 export default function Home() {
   return (
     <>
@@ -48,7 +54,11 @@ export default function Home() {
           content="https://skills2evolve.com/twitter-image.jpg"
         />
       </Head>
-      <Login />
+      <ThirdwebProvider client={client}
+       supportedChains={["ethereum", "polygon", "binance", "arbitrum"]}
+      >
+        <Login />
+      </ThirdwebProvider>
     </>
   );
 }

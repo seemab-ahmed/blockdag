@@ -11,14 +11,18 @@
   "dependencies": {
     "@splidejs/react-splide": "^0.7.12",
     "aos": "^2.3.4",
+    "googleapis": "^154.0.0",
     "next": "15.3.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-router-dom": "^7.7.0"
+    "react-router-dom": "^7.7.0",
+    "thirdweb": "^5.105.22"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
+    "@types/node": "24.1.0",
+    "@types/react": "19.1.8",
     "eslint": "^9",
     "eslint-config-next": "15.3.1",
     "tailwindcss": "^4"

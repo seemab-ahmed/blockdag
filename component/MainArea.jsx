@@ -4,6 +4,7 @@ import BuyMiner from './buyMiner';
 import RankProgress from './rankProgress';
 import BeatVestingModal from './beatVestingModal';
 import SelectCurrencyModal from './selectCurrencyModal';
+import Transaction from './transaction';
 export const MainArea = () => {
   const [activeTab, setActiveTab] = useState('buyBDAG');
   const [activePaymentMethod, setActivePaymentMethod] = useState('ETH');
@@ -233,15 +234,7 @@ export const MainArea = () => {
         </div>
         {/* <div className="wallet_shouldLoginOverlay__6lhDi"></div> */}
       </div>
-      <div className="transactions_lastTransactionsArea__DfC1R">
-      <p className="style_text__Z44aT style_lg__AdDq0 style_font-700__9q48B">
-        Last Transactions
-      </p>
-      <div className="transactions_lastList__zrOK_">
-        <p>There are no finalized transactions yet.</p>
-      </div>
-      
-    </div>
+      <Transaction />
     {isModalOpen && <BeatVestingModal onClose={handleCloseModal} />}
     {isCurrencyModalOpen && <SelectCurrencyModal onClose={handleCloseCurrencyModal} />}
     </div>

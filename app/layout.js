@@ -16,7 +16,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" data-arp="">
       <body className={`${inter.variable} antialiased`} cz-shortcut-listen="true" 
-      data-new-gr-c-s-check-loaded="14.1244.0"
+      data-new-gr-c-s-check-loaded="14.1246.0"
       data-gr-ext-installed="">
           {children}
       </body>
