@@ -1,7 +1,7 @@
-import Transaction from '@/component/transaction'
+import Transaction from "../../../component/transaction";
 import React from 'react'
 
-export const page = () => {
+export default function Page () {
   return (
     <div>
       <Transaction />

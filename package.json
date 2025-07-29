@@ -9,13 +9,16 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@reduxjs/toolkit": "^2.8.2",
     "@splidejs/react-splide": "^0.7.12",
+    "@tanstack/react-query": "^5.83.0",
     "@thirdweb-dev/sdk": "^4.0.99",
     "aos": "^2.3.4",
     "googleapis": "^154.0.0",
     "next": "15.3.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-redux": "^9.2.0",
     "react-router-dom": "^7.7.0",
     "thirdweb": "^5.105.22"
   },

@@ -1,10 +1,10 @@
 "use client";
 
 import { useActiveWallet, useActiveWalletConnectionStatus } from "thirdweb/react";
-import { createWallet, walletConnect } from "@thirdweb-dev/react";
+// import { createWallet, walletConnect } from "@thirdweb-dev/react";
 import { createThirdwebClient } from "thirdweb";
 import { ConnectButton } from "thirdweb/react";
-// import { createWallet } from "thirdweb/wallets";
+import { createWallet, walletConnect } from "thirdweb/wallets";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 

@@ -5,7 +5,16 @@ import RankProgress from './rankProgress';
 import BeatVestingModal from './beatVestingModal';
 import SelectCurrencyModal from './selectCurrencyModal';
 import Transaction from './transaction';
+  import { useSheetData } from '../hooks/useSheetData';
+  import { parseSheetData } from '../utils/sheetParser';
 export const MainArea = () => {
+
+  const { data: sheetData } = useSheetData();
+const { profile, transactions } = parseSheetData(sheetData);
+
+
+  console.log(profile, transactions);
+
   const [activeTab, setActiveTab] = useState('buyBDAG');
   const [activePaymentMethod, setActivePaymentMethod] = useState('ETH');
   const [amount, setAmount] = useState("");
@@ -32,41 +41,28 @@ export const MainArea = () => {
   return (
     <div className="style_overview__iPKe6">
     <RankProgress />
-    <div className="style_balanceSection__K0yQq">
-        <div className="style_balances__lxOoR">
-          <div className="style_balanceBox___25FT">
-            <p className="style_text__Z44aT style_sm__RimS5 style_primary__o7qgw">Total BDAG Balance</p>
-            <p className="style_title__VJGg6 __className_665d18 style_sm__fI_bB "
-            // loadingAnimation
-            >0.00 BDAG</p>
-            <div className="style_icon__jwMyF">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M16.5 14H16.51M3 5V19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V9C21 7.89543 20.1046 7 19 7L5 7C3.89543 7 3 6.10457 3 5ZM3 5C3 3.89543 3.89543 3 5 3H17M17 14C17 14.2761 16.7761 14.5 16.5 14.5C16.2239 14.5 16 14.2761 16 14C16 13.7239 16.2239 13.5 16.5 13.5C16.7761 13.5 17 13.7239 17 14Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path>
-              </svg>
-            </div>
-          </div>
-          <div className="style_balanceBox___25FT">
-            <p className="style_text__Z44aT style_sm__RimS5 style_primary__o7qgw">Your Coin Worth at Launch</p>
-            <p className="style_title__VJGg6 __className_665d18 style_sm__fI_bB "
-            // loadingAnimation
-            >0.00 </p>
-            <div className="style_icon__jwMyF">
-              <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M8.5 15.5627C8.5 16.8513 9.54467 17.896 10.8333 17.896H13C14.3807 17.896 15.5 16.7767 15.5 15.396C15.5 14.0153 14.3807 12.896 13 12.896H11C9.61929 12.896 8.5 11.7767 8.5 10.396C8.5 9.01528 9.61929 7.896 11 7.896H13.1667C14.4553 7.896 15.5 8.94067 15.5 10.2293M12 6.396V7.896M12 17.896V19.396M22 12.896C22 18.4188 17.5228 22.896 12 22.896C6.47715 22.896 2 18.4188 2 12.896C2 7.37315 6.47715 2.896 12 2.896C17.5228 2.896 22 7.37315 22 12.896Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path>
-              </svg>
-            </div>
-          </div>
-          <div className="style_balanceBox___25FT">
-            <p className="style_text__Z44aT style_sm__RimS5 style_primary__o7qgw">Referral Earnings</p>
-            <p className="style_title__VJGg6 __className_665d18 style_sm__fI_bB "
-            // loadingAnimation
-            >0.00 BDAG</p>
-            <div className="style_icon__jwMyF">
-              <img alt="earning" loading="lazy" width="70" height="70" decoding="async" data-nimg="1" className="themeimg" src="https://purchase3.blockdag.network/images/dashboard/icons/earning.svg" style={{color: "transparent"}} /> 
-            </div>
-          </div>
-        </div>
+   <div className="style_balanceSection__K0yQq">
+  <div className="style_balances__lxOoR">
+    <div className="style_balanceBox___25FT">
+      <p className="style_text__Z44aT style_sm__RimS5 style_primary__o7qgw">Total BDAG Balance</p>
+      <p className="style_title__VJGg6 __className_665d18 style_sm__fI_bB">
+        {profile["Total Balance"] ? `${profile["Total Balance"]} BDAG` : "0.00 BDAG"}
+      </p>
+      <div className="style_icon__jwMyF">
+        {/* ...svg... */}
       </div>
+    </div>
+    <div className="style_balanceBox___25FT">
+      <p className="style_text__Z44aT style_sm__RimS5 style_primary__o7qgw">Your Coin Worth at Launch</p>
+      <p className="style_title__VJGg6 __className_665d18 style_sm__fI_bB">
+        {profile["your coin worth at launch"] || "0.00"}
+      </p>
+      <div className="style_icon__jwMyF">
+        {/* ...svg... */}
+      </div>
+    </div>
+  </div>
+</div>
       <div className="style_purchase__X5B7u">
         <div className="wallet_wallet__HKWGq wallet_shouldLogin__ai97O">
           <div id="buy" className="wallet_anchor__W3ZBk"></div>

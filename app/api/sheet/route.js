@@ -1,4 +1,4 @@
-import { getSheetsClient } from "@/libs/sheetsClient";
+import { getSheetsClient } from "../../../libs/sheetsClient";
 
 export async function GET() {
   const sheets = await getSheetsClient();
@@ -8,5 +8,5 @@ export async function GET() {
     spreadsheetId,
     range,
   });
-  return Response.json(response.data.values);
+  return Response.json(response.data.values); 
 }

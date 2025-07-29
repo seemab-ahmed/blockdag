@@ -58,8 +58,8 @@ export default function Home() {
       <ThirdwebProvider client={client}
        supportedChains={["ethereum", "polygon", "binance", "arbitrum"]}
       >
-        {/* <Login /> */}
-        <ConnectOnly />
+        <Login />
+        {/* <ConnectOnly /> */}
       </ThirdwebProvider>
     </>
   );
