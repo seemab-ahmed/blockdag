@@ -7,13 +7,16 @@ import SelectCurrencyModal from './selectCurrencyModal';
 import Transaction from './transaction';
   import { useSheetData } from '../hooks/useSheetData';
   import { parseSheetData } from '../utils/sheetParser';
+import { parseConstantsData } from '../utils/parseConstantsData';
 export const MainArea = () => {
 
   const { data: sheetData } = useSheetData();
 const { profile, transactions } = parseSheetData(sheetData);
-
+const { data: constantsData } = useSheetData("Constants");
 
   console.log(profile, transactions);
+  const constants = parseConstantsData(constantsData);
+  console.log('constantdata', constants );
 
   const [activeTab, setActiveTab] = useState('buyBDAG');
   const [activePaymentMethod, setActivePaymentMethod] = useState('ETH');
@@ -81,12 +84,12 @@ const { profile, transactions } = parseSheetData(sheetData);
           {activeTab === 'buyBDAG' ? (
           <div className="wallet_walletWrapper__6pNfN">
             <div className="wallet_walletHead__N6OWX">
-              <div className="wallet_currentBatch__L9Xlq">
+              {/* <div className="wallet_currentBatch__L9Xlq">
                 <p className="style_text__Z44aT style_sm__RimS5 style_primary__o7qgw">Current Batch</p>
                 <p className="style_text__Z44aT style_md__ZQhe4 style_font-700__9q48B">Batch 29</p>
                 <p className="style_text__Z44aT style_sm__RimS5 style_primary__o7qgw">-</p>
                 <p className="style_text__Z44aT style_md__ZQhe4 style_font-700__9q48B">Phase 88</p>
-              </div>
+              </div> */}
               <div className="wallet_doubleIt__OhJ0r">
                 <p className="wallet_doubleText__JRiZM __className_665d18"
                 onClick={handleOpenModal} // Open modal on click
@@ -96,17 +99,21 @@ const { profile, transactions } = parseSheetData(sheetData);
               <div className="wallet_walletHeadCoin__G_Gxn">
                 <div className="wallet_walletHeadItem__2_GYQ">
                   <p className="style_text__Z44aT style_sm__RimS5 style_primary__o7qgw">Total Coin Sales</p>
-                  <p className="style_text__Z44aT style_md__ZQhe4 style_font-700__9q48B">$336,488,208.41 </p>
+                  <p className="style_text__Z44aT style_md__ZQhe4 style_font-700__9q48B">
+                    {constants["Total Coin sales"] || "$0.00"}
+                  </p>
                 </div>
                 <div className="wallet_walletHeadItem__2_GYQ">
                   <p className="style_text__Z44aT style_sm__RimS5 style_primary__o7qgw">Total Coins Sold</p>
-                  <p className="style_text__Z44aT style_md__ZQhe4 style_font-700__9q48B">23,853,543,704 </p>
+                  <p className="style_text__Z44aT style_md__ZQhe4 style_font-700__9q48B">
+                    {constants["Total coins sold"] || "0"}
+                  </p>
                 </div>
               </div>
               <div className="style_bar__PrR89">
                 <div className="style_spans__yvuK_">
                   <span>Remaining</span>
-                  <span translate="no">8.1M</span>
+                  <span translate="no">{constants["Remaining bar"] || "0"}</span>
                 </div>
                 <span className="style_progress__IPzew" style={{width: "98%"}}></span>
                 <span className="style_progressTitle__SWVW1" style={{left: "98%"}}></span>
@@ -114,11 +121,15 @@ const { profile, transactions } = parseSheetData(sheetData);
               <div className="wallet_walletHeadCoin__G_Gxn">
                 <div className="wallet_walletPriceItem__E7HOg">
                   <p className="style_text__Z44aT style_md__ZQhe4">1 BDAG:</p>
-                  <p className="style_text__Z44aT style_md__ZQhe4">$0.0276</p>
+                  <p className="style_text__Z44aT style_md__ZQhe4">
+                    ${constants["Batch Price"] || "0.00"}
+                  </p>
                 </div>
                 <div className="wallet_walletPriceItem__E7HOg">
                   <p className="style_text__Z44aT style_md__ZQhe4">Next Batch:</p>
-                  <p className="style_text__Z44aT style_md__ZQhe4">$0.029</p>
+                  <p className="style_text__Z44aT style_md__ZQhe4">
+                    ${constants["Next Batch"] || "0.00"}
+                  </p>
                 </div>
               </div>
             </div>

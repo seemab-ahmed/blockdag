@@ -1,9 +1,12 @@
 import { getSheetsClient } from "../../../libs/sheetsClient";
 
-export async function GET() {
+export async function GET(req) {
+  const { searchParams } = new URL(req.url);
+  const tab = searchParams.get("tab") || "0x5649"; // default tab
+
   const sheets = await getSheetsClient();
-  const spreadsheetId = process.env.SPREADSHEET_ID; // Get from .env
-  const range = "'0x5649'!A1:Z100";
+  const spreadsheetId = process.env.SPREADSHEET_ID;
+  const range = `'${tab}'!A1:Z100`;
   const response = await sheets.spreadsheets.values.get({
     spreadsheetId,
     range,
