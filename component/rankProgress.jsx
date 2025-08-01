@@ -1,11 +1,11 @@
 'use client';
 import React from 'react';
 
-const RankProgress = () => {
-  const currentRank = "Crab";
-  const nextRank = "Turtle";
+const RankProgress = ({ current, next, leveltoUp }) => {
+  const currentRank = current;
+  const nextRank = next;
   const progress = 0; // 0% progress
-  const coinsNeeded = "13.33K";
+  const coinsNeeded = leveltoUp;
   const currentLevel = 1;
   const nextLevel = 2;
 
@@ -33,7 +33,7 @@ const RankProgress = () => {
             height="70" 
             decoding="async" 
             className="rankImg" 
-            src={`https://purchase3.blockdag.network/images/ranks/${currentRank.toLowerCase()}.svg`} 
+            src={`https://purchase3.blockdag.network/images/ranks/${currentRank?.toLowerCase()}.svg`} 
             style={{ color: 'transparent' }} 
           />
           <div className="style_infoContent__QZi4X">
@@ -51,7 +51,7 @@ const RankProgress = () => {
             >
               <div className="style_barCurrent__tuGTi">{currentLevel}</div>
               <div className="style_barCount__CgdIZ" translate="no">
-                {progress.toFixed(2)}
+                {progress?.toFixed(2)}
               </div>
             </div>
           </div>
@@ -67,7 +67,7 @@ const RankProgress = () => {
             height="70" 
             decoding="async" 
             className="rankImg" 
-            src={`https://purchase3.blockdag.network/images/ranks/${nextRank.toLowerCase()}.svg`} 
+            src={`https://purchase3.blockdag.network/images/ranks/${nextRank?.toLowerCase()}.svg`} 
             style={{ color: 'transparent' }} 
           />
           <div className="style_infoContent__QZi4X">

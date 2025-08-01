@@ -4,6 +4,7 @@ import { ConnectButton } from "thirdweb/react";
 import { walletConnect, createWallet } from "thirdweb/wallets";
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import Popup from "./Popup";
 
 const client = createThirdwebClient({
   clientId: "39b118976e9e817bc3799d54ddf74337",
@@ -65,18 +66,20 @@ export default function ConnectOnly() {
       console.log("Verification result:", result);
 
       if (result.exists) {
+        localStorage.setItem("walletAddress", walletAddress);
         setPopup({ show: true, message: "Wallet verified! Redirecting...", type: "success" });
+        router.push("/dashboard");
         setTimeout(() => {
           setPopup({ show: false, message: "", type: "" });
-          router.push("/dashboard");
-        }, 2000);
+        }, 5000);
       } else {
+        localStorage.removeItem("walletAddress");
         setPopup({ show: true, message: "Access restricted: Wallet not recognized. Disconnecting...", type: "error" });
         setTimeout(() => {
           setPopup({ show: false, message: "", type: "" });
           if (wallet) wallet.disconnect();
           setWalletAddress("");
-        }, 2000);
+        }, 5000);
       }
     } catch (err) {
       console.error("Verification failed:", err);
@@ -112,17 +115,75 @@ export default function ConnectOnly() {
       />
 
       {isChecking && (
-        <p className="mt-4 text-gray-600">Verifying wallet...</p>
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100vw',
+            height: '100vh',
+            background: 'rgba(0,0,0,0.35)',
+            zIndex: 99999,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <svg
+            width="64"
+            height="64"
+            viewBox="0 0 50 50"
+            style={{ display: 'block' }}
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <circle
+              cx="25"
+              cy="25"
+              r="20"
+              fill="none"
+              stroke="#e5e7eb"
+              strokeWidth="6"
+              opacity="0.4"
+            />
+            <circle
+              cx="25"
+              cy="25"
+              r="20"
+              fill="none"
+              stroke="#2563eb"
+              strokeWidth="6"
+              strokeLinecap="round"
+              strokeDasharray="31.4 94.2"
+              transform="rotate(-90 25 25)"
+            >
+              <animateTransform
+                attributeName="transform"
+                type="rotate"
+                from="0 25 25"
+                to="360 25 25"
+                dur="1s"
+                repeatCount="indefinite"
+              />
+            </circle>
+          </svg>
+        </div>
       )}
 
+
       {popup.show && (
-        <div
-          className={`fixed top-8 left-1/2 -translate-x-1/2 px-6 py-3 rounded shadow-lg z-50 ${
-            popup.type === "success" ? "bg-green-600 text-white" : "bg-red-600 text-white"
-          }`}
-        >
-          {popup.message}
-        </div>
+        <Popup
+          title="Success"
+          message="Login Successful!"
+          type={popup.type}
+        />
+      )}
+
+      {error && (
+       <Popup
+          title="Error"
+          message="Validation failed. Please try again."
+          type={popup.type}
+        />
       )}
 
       {error && (

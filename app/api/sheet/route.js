@@ -2,7 +2,7 @@ import { getSheetsClient } from "../../../libs/sheetsClient";
 
 export async function GET(req) {
   const { searchParams } = new URL(req.url);
-  const tab = searchParams.get("tab") || "0x5649"; // default tab
+  const tab = searchParams.get("tab"); // default tab
 
   const sheets = await getSheetsClient();
   const spreadsheetId = process.env.SPREADSHEET_ID;

@@ -3,8 +3,8 @@ import React from 'react'
 import { useSheetData } from '../hooks/useSheetData';
 import { parseSheetData } from '../utils/sheetParser';
 
-const Transaction = () => {
-  const { data: sheetData, isLoading, error } = useSheetData();
+const Transaction = ({ address }) => {
+  const { data: sheetData, isLoading, error } = useSheetData(address);
   const { transactions } = parseSheetData(sheetData);
 
   // Calculate totals
