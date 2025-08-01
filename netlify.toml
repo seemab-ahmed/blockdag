@@ -1,0 +1,11 @@
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  # Allow these specific env vars to pass secret scanning
+  SECRETS_SCAN_OMIT_KEYS = "GOOGLE_SERVICE_ACCOUNT_KEY,SPREADSHEET_ID,NEXT_PUBLIC_THIRDWEB_CLIENT_ID,GOOGLE_SERVICE_ACCOUNT_EMAIL"
+
+# Optional: Force Node.js version (match your local version)
+[context.production.environment]
+  NODE_VERSION = "18.x"  # Adjust to your Node version
