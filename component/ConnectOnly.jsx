@@ -193,12 +193,6 @@ export default function ConnectOnly() {
             : error}
         </p>
       )}
-
-      {walletAddress && (
-        <p className="mt-2 text-sm text-gray-500">
-          Connected: {`${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}`}
-        </p>
-      )}
     </div>
   );
 }

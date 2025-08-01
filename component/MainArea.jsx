@@ -376,6 +376,7 @@ useEffect(() => {
         </div>
       </div>
       <Transaction address={storedWallet} />
+      
 
       {isModalOpen && <BeatVestingModal onClose={handleCloseModal} />}
       {isCurrencyModalOpen && <SelectCurrencyModal onClose={handleCloseCurrencyModal} />}
