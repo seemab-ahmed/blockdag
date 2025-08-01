@@ -1,5 +1,3 @@
-"use client";
-
 import { useActiveWallet, useActiveWalletConnectionStatus } from "thirdweb/react";
 import { createThirdwebClient } from "thirdweb";
 import { ConnectButton } from "thirdweb/react";
@@ -27,7 +25,7 @@ export default function ConnectOnly() {
   const [isChecking, setIsChecking] = useState(false);
   const [error, setError] = useState("");
   const [walletAddress, setWalletAddress] = useState("");
-  
+  const [popup, setPopup] = useState({ show: false, message: "", type: "" });
 
   // Get wallet address when connected
   useEffect(() => {
@@ -44,7 +42,6 @@ export default function ConnectOnly() {
         }
       }
     };
-
     getAddress();
   }, [connectionStatus, wallet]);
 
@@ -57,7 +54,6 @@ export default function ConnectOnly() {
     try {
       console.log("Verifying wallet:", walletAddress);
       const response = await fetch(`/api/check-sheet?wallet=${walletAddress}`);
-      
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         throw new Error(
@@ -69,19 +65,27 @@ export default function ConnectOnly() {
       console.log("Verification result:", result);
 
       if (result.exists) {
-        router.push("/dashboard");
+        setPopup({ show: true, message: "Wallet verified! Redirecting...", type: "success" });
+        setTimeout(() => {
+          setPopup({ show: false, message: "", type: "" });
+          router.push("/dashboard");
+        }, 2000);
       } else {
-        setError("Access restricted: Wallet not recognized.");
+        setPopup({ show: true, message: "Access restricted: Wallet not recognized. Disconnecting...", type: "error" });
+        setTimeout(() => {
+          setPopup({ show: false, message: "", type: "" });
+          if (wallet) wallet.disconnect();
+          setWalletAddress("");
+        }, 2000);
       }
     } catch (err) {
       console.error("Verification failed:", err);
-      setError(
-        err.message || "Failed to verify wallet. Please try again later."
-      );
+      setPopup({ show: true, message: err.message || "Failed to verify wallet. Please try again later.", type: "error" });
+      setTimeout(() => setPopup({ show: false, message: "", type: "" }), 2000);
     } finally {
       setIsChecking(false);
     }
-  }, [walletAddress, router]);
+  }, [walletAddress, router, wallet]);
 
   // Verify wallet when address is available
   useEffect(() => {
@@ -109,6 +113,16 @@ export default function ConnectOnly() {
 
       {isChecking && (
         <p className="mt-4 text-gray-600">Verifying wallet...</p>
+      )}
+
+      {popup.show && (
+        <div
+          className={`fixed top-8 left-1/2 -translate-x-1/2 px-6 py-3 rounded shadow-lg z-50 ${
+            popup.type === "success" ? "bg-green-600 text-white" : "bg-red-600 text-white"
+          }`}
+        >
+          {popup.message}
+        </div>
       )}
 
       {error && (

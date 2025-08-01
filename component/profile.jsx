@@ -1,6 +1,13 @@
+'use client';
 import React from 'react';
+import { useSheetData } from '../hooks/useSheetData';
+import { parseSheetData } from '../utils/sheetParser';
+
 
 const Profile = () => {
+   const { data: sheetData } = useSheetData();
+  const { profile } = parseSheetData(sheetData);
+
   return (
     <div className="profile_profile__7BfzS">
       <div className="profile_userInfoArea__HKeSC">
@@ -86,32 +93,19 @@ const Profile = () => {
           <div className="profile_stats__SwnTU">
             <div className="profile_stat__q4375">
               <p className="style_text__Z44aT style_md__ZQhe4 style_primary__o7qgw">Total BDAG Balance</p>
-              <p className="style_text__Z44aT style_md__ZQhe4 style_font-700__9q48B">0.00 BDAG</p>
+              <p className="style_text__Z44aT style_md__ZQhe4 style_font-700__9q48B">{profile["Total Balance"] ? `${profile["Total Balance"]} BDAG` : "0.00 BDAG"}</p>
             </div>
             <div className="profile_stat__q4375">
               <p className="style_text__Z44aT style_md__ZQhe4 style_primary__o7qgw">Current Coin Worth</p>
-              <p className="style_text__Z44aT style_md__ZQhe4 style_font-700__9q48B">0.00</p>
+              <p className="style_text__Z44aT style_md__ZQhe4 style_font-700__9q48B">{profile["current coin worth"] || "0.00"}</p>
             </div>
             <div className="profile_stat__q4375">
               <p className="style_text__Z44aT style_md__ZQhe4 style_primary__o7qgw">Coin Spent Amount</p>
-              <p className="style_text__Z44aT style_md__ZQhe4 style_font-700__9q48B">0.00</p>
+              <p className="style_text__Z44aT style_md__ZQhe4 style_font-700__9q48B">{profile["coin spent amount"] || "0.00"}</p>
             </div>
             <div className="profile_stat__q4375">
               <p className="style_text__Z44aT style_md__ZQhe4 style_primary__o7qgw">Your Coin Worth at Launch</p>
-              <p className="style_text__Z44aT style_md__ZQhe4 style_font-700__9q48B">0.00 </p>
-            </div>
-            <div className="profile_stat__q4375">
-              <p className="style_text__Z44aT style_md__ZQhe4 style_primary__o7qgw">Referral Earnings</p>
-              <p className="style_text__Z44aT style_md__ZQhe4 style_font-700__9q48B">0.00 BDAG</p>
-            </div>
-            <div className="profile_stat__q4375">
-              <p className="style_text__Z44aT style_md__ZQhe4 style_primary__o7qgw">Referral Code</p>
-              <p className="style_text__Z44aT style_md__ZQhe4 style_font-700__9q48B">
-                etafdfwo 
-                <span className="style_copy__rlO69 profile_copy__7X7oC">
-                  <img alt="copy" loading="lazy" width="0" height="0" decoding="async" data-nimg="1" src="https://purchase3.blockdag.network/icons/copy.svg" style={{ color: 'transparent' }} />
-                </span>
-              </p>
+              <p className="style_text__Z44aT style_md__ZQhe4 style_font-700__9q48B">{profile["your coin worth at launch"] || "0.00"}</p>
             </div>
           </div>
           <div className="profile_chartArea__vsPCc">
