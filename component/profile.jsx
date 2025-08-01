@@ -5,7 +5,15 @@ import { parseSheetData } from '../utils/sheetParser';
 
 
 const Profile = () => {
-   const { data: sheetData } = useSheetData();
+  
+    const [storedWallet, setStoredWallet] = useState(null);
+  
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setStoredWallet(localStorage.getItem("walletAddress"));
+    }
+  }, []);
+   const { data: sheetData } = useSheetData(storedWallet);
   const { profile } = parseSheetData(sheetData);
 
   return (
