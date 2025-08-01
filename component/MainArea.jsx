@@ -25,6 +25,14 @@ const abi = [
 ];
 
 export const MainArea = () => {
+
+  const [storedWallet, setStoredWallet] = useState(null);
+
+useEffect(() => {
+  if (typeof window !== "undefined") {
+    setStoredWallet(localStorage.getItem("walletAddress"));
+  }
+}, []);
   // Data and state management
     const [activeTab, setActiveTab] = useState('buyBDAG');
   const [activePaymentMethod, setActivePaymentMethod] = useState('ETH');
@@ -38,7 +46,6 @@ export const MainArea = () => {
   });
   const wallet = useActiveWallet();
   const { mutate: sendTransaction } = useSendTransaction();
-  const storedWallet = localStorage.getItem("walletAddress");
   const { data: sheetData } = useSheetData(storedWallet);
   const { data: constantsData } = useSheetData("Constants");
   const { profile } = parseSheetData(sheetData);
