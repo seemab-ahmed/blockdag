@@ -1,3 +1,4 @@
+'use client';
 import { useActiveWallet, useActiveWalletConnectionStatus } from "thirdweb/react";
 import { createThirdwebClient } from "thirdweb";
 import { ConnectButton } from "thirdweb/react";
