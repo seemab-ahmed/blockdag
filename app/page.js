@@ -1,25 +1,24 @@
 "use client";
 import { Login } from "../component/login";
 import Head from "next/head";
-import { ThirdwebProvider } from "thirdweb/react";
 import { createThirdwebClient } from "thirdweb";
-import ConnectOnly from "../component/ConnectOnly";
-
+import { useAuthRedirect } from "../hooks/useAuthRedirect";
 const client = createThirdwebClient({
   clientId: "39b118976e9e817bc3799d54ddf74337",
 });
 export default function Home() {
+  useAuthRedirect();
   return (
     <>
       <Head>
-        <title>Skills2Evolve - Learn, Evolve and Secure Your Future</title>
+        <title>BlockDag - Your Gateway to the Future</title>
         <meta
           name="description"
-          content="Discover insights, guides and best practices to enhance your skills and secure your future with Skills2Evolve."
+          content="BlockDag is your gateway to the future of blockchain technology. Explore, learn, and evolve with us."
         />
         <meta
           name="keywords"
-          content="skills development, professional growth, learning, career evolution"
+          content="blockchain, technology, innovation, future"
         />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
@@ -27,7 +26,7 @@ export default function Home() {
         {/* Open Graph / Social Media Meta Tags */}
         <meta
           property="og:title"
-          content="Skills2Evolve - Learn, Evolve and Secure Your Future"
+          content="BlockDag - Your Gateway to the Future"
         />
         <meta
           property="og:description"
@@ -55,12 +54,8 @@ export default function Home() {
           content="https://skills2evolve.com/twitter-image.jpg"
         />
       </Head>
-      <ThirdwebProvider client={client}
-       supportedChains={["ethereum", "polygon", "binance", "arbitrum"]}
-      >
         <Login />
         {/* <ConnectOnly /> */}
-      </ThirdwebProvider>
     </>
   );
 }

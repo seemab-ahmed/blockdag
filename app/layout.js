@@ -1,7 +1,6 @@
 import { Providers } from './providers';
 import "./globals.css";
 import { Inter } from "next/font/google";
-
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
@@ -19,7 +18,7 @@ export default function RootLayout({ children }) {
       data-new-gr-c-s-check-loaded="14.1246.0"
       data-gr-ext-installed="">
         <Providers>
-          {children}
+            {children}
         </Providers> 
       </body>
     </html>

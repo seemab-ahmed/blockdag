@@ -1,6 +1,23 @@
-import React from 'react'
+"use client";
+import React, { useState, useEffect } from 'react';
+import { useActiveWallet } from "thirdweb/react";
+import { useRouter } from "next/navigation";
 
 export const Header = () => {
+  const wallet = useActiveWallet();
+  const router = useRouter();
+  const handleLogout = async () => {
+    if (wallet && typeof wallet.disconnect === "function") {
+      console.log("Wallet disconnected successfully");
+      await wallet.disconnect();
+    }
+    if (typeof window !== "undefined") {
+  sessionStorage.setItem("justLoggedOut", "true");
+  localStorage.removeItem("walletAddress");
+  // ...disconnect wallet, redirect, etc.
+}
+    router.push("/");
+  };
   return (
     <div className="topbar_topbar__TxUPS">
       <p className="style_text__Z44aT style_lg__AdDq0">BlockDAG Dashboard v3</p>
@@ -20,11 +37,11 @@ export const Header = () => {
           <p className="style_text__Z44aT style_sm__RimS5">Notifications</p>
           <span className="topbar_notCount__308rO topbar_active__YxvZN">1</span>
         </div>
-        <div className="topbar_button__kWwDK">
+        <div className="topbar_button__kWwDK" onClick={handleLogout} style={{ cursor: 'pointer' }}>
           <img alt="logout" loading="lazy" width="18" height="18" decoding="async" data-nimg="1" style={{color:"transparent"}} src="https://purchase3.blockdag.network/images/dashboard/icons/wallet.svg" />
-          <p className="style_text__Z44aT style_sm__RimS5">Connect Wallet</p>
+          <p className="style_text__Z44aT style_sm__RimS5">Logout Wallet</p>
         </div>
       </div>
     </div>
-  )
+  );
 }

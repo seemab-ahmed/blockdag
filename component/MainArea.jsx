@@ -1,5 +1,6 @@
 'use client';
 import React, { useState, useEffect, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 import BuyMiner from './buyMiner';
 import RankProgress from './rankProgress';
 import BeatVestingModal from './beatVestingModal';
@@ -24,7 +25,9 @@ const abi = [
   }
 ];
 
+
 export const MainArea = () => {
+  const router = useRouter();
 
   const [storedWallet, setStoredWallet] = useState(null);
 
@@ -50,15 +53,6 @@ useEffect(() => {
   const { data: constantsData } = useSheetData("Constants");
   const { profile } = parseSheetData(sheetData);
   const constants = parseConstantsData(constantsData);
-useEffect(() => {
-  if (!storedWallet && wallet && typeof(wallet.disconnect) === "function") {
-    wallet.disconnect();
-    localStorage.removeItem("walletAddress");
-    // redirect to home page or handle logout
-    router.push("/");
-  }
-}, [storedWallet, wallet]);
-
   // Buy function with wallet verification
   const handleBuy = useCallback(async () => {
     if (!storedWallet) {
@@ -69,7 +63,6 @@ useEffect(() => {
       });
       return;
     }
-
 
     if (!amount || isNaN(amount)) {
       setTransactionStatus({
@@ -382,7 +375,7 @@ useEffect(() => {
           )}
         </div>
       </div>
-      <Transaction address={storedWallet} />
+      <Transaction />
 
       {isModalOpen && <BeatVestingModal onClose={handleCloseModal} />}
       {isCurrencyModalOpen && <SelectCurrencyModal onClose={handleCloseCurrencyModal} />}

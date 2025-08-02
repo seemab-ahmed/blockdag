@@ -3,8 +3,17 @@ import React from 'react'
 import { useSheetData } from '../hooks/useSheetData';
 import { parseSheetData } from '../utils/sheetParser';
 
-const Transaction = ({ address }) => {
-  const { data: sheetData, isLoading, error } = useSheetData(address);
+const Transaction = () => {
+
+  const [storedWallet, setStoredWallet] = useState(null);
+
+useEffect(() => {
+  if (typeof window !== "undefined") {
+    setStoredWallet(localStorage.getItem("walletAddress"));
+  }
+}, []);
+
+  const { data: sheetData, isLoading, error } = useSheetData(storedWallet);
   const { transactions } = parseSheetData(sheetData);
 
   // Calculate totals

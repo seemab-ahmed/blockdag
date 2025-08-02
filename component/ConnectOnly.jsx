@@ -29,7 +29,6 @@ export default function ConnectOnly() {
   const [walletAddress, setWalletAddress] = useState("");
   const [popup, setPopup] = useState({ show: false, message: "", type: "" });
 
-  // Get wallet address when connected
   useEffect(() => {
     const getAddress = async () => {
       if (connectionStatus === "connected" && wallet) {
@@ -37,7 +36,6 @@ export default function ConnectOnly() {
           const account = await wallet.getAccount();
           if (account?.address) {
             setWalletAddress(account.address);
-            console.log("Wallet connected:", account.address);
           }
         } catch (err) {
           console.error("Error getting wallet address:", err);
@@ -65,6 +63,7 @@ export default function ConnectOnly() {
 
       const result = await response.json();
       console.log("Verification result:", result);
+      console.log("Wallet address exist :", result.exists ,  walletAddress );
 
       if (result.exists) {
         localStorage.setItem("walletAddress", walletAddress);
@@ -98,6 +97,14 @@ export default function ConnectOnly() {
     }
   }, [walletAddress, verifyWallet]);
 
+ useEffect(() => {
+  if (typeof window !== "undefined") {
+    if (sessionStorage.getItem("justLoggedOut") === "true") {
+      sessionStorage.removeItem("justLoggedOut");
+      window.location.reload();
+    }
+  }
+}, []);
   return (
     <div className="flex flex-col items-center gap-4 p-6">
       <ConnectButton

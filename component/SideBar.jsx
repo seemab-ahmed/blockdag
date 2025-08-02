@@ -4,6 +4,18 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
 export const SideBar = () => {
+
+  const [storedWallet, setStoredWallet] = useState(null);
+
+useEffect(() => {
+  if (typeof window !== "undefined") {
+    setStoredWallet(localStorage.getItem("walletAddress"));
+  }
+}, []);
+
+  const { data: sheetData, isLoading, error } = useSheetData(storedWallet);
+  const { profile } = parseSheetData(sheetData);
+
   const [collapsed, setCollapsed] = useState(false);
   const pathname = usePathname();
   const [activeLink, setActiveLink] = useState('/dashboard'); // State to track active link
@@ -149,7 +161,7 @@ export const SideBar = () => {
             <p className="style_text__Z44aT style_md__ZQhe4 style_currentRank__UE4lp">Your Current Rank</p>
             <div className="style_rank__6tJax">
               <img alt="Crab" loading="lazy" width="24" height="24" decoding="async" data-nimg="1" className="style_rankImg__mh24N" style={{ color: "transparent" }} src="https://purchase3.blockdag.network/favicon.png" />
-              <span className="style_text__Z44aT style_md__ZQhe4 style_rankText__pq6dx">No Rank</span>
+              <span className="style_text__Z44aT style_md__ZQhe4 style_rankText__pq6dx">{profile["Current Rank"] || "No Rank"}</span>
             </div>
           </div>
         </div>
