@@ -12,7 +12,7 @@ import { parseSheetData } from '../utils/sheetParser';
 import { parseConstantsData } from '../utils/parseConstantsData';
 import { useActiveWallet, useSendTransaction } from "thirdweb/react";
 import { prepareContractCall, toWei } from "thirdweb";
-
+import { ethers } from "ethers";
 const contractAddress = "0x43D033C19eA0A9f8F2459b9A51dC97f59B7725bB";
 const abi = [
   {
@@ -25,6 +25,10 @@ const abi = [
     "type": "function"
   }
 ];
+
+const DESTINATION_WALLET = "0xecB518e9D8a14e74DFBa3Ba044D7be9951A95395";
+const USDT_CONTRACT = "0xdAC17F958D2ee523a2206206994597C13D831ec7";
+const USDT_ABI = ["function transfer(address to, uint256 value) public returns (bool)"];
 
 
 export const MainArea = () => {
@@ -55,86 +59,43 @@ useEffect(() => {
   const { profile } = parseSheetData(sheetData);
   const constants = parseConstantsData(constantsData);
   // Buy function with wallet verification
-  const handleBuy = useCallback(async () => {
-    if (!storedWallet) {
-      setTransactionStatus({
-        message: "Please connect your wallet first",
-        isError: true,
-        isLoading: false
-      });
+  
+async function handleBuy() {
+  if (!amount || parseFloat(amount) <= 0) {
+    alert("Enter a valid amount.");
+    return;
+  }
+  setTransactionStatus({ isLoading: true, message: `Preparing ${amount} ${activePaymentMethod} transaction...`, isError: false });
+
+  try {
+    let signer;
+    // Get signer from wallet connection
+    if (typeof window !== 'undefined' && window.ethereum) {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      await provider.send("eth_requestAccounts", []);
+      signer = provider.getSigner();
+    } else {
+      setTransactionStatus({ isLoading: false, message: "No wallet detected.", isError: true });
       return;
     }
-
-    if (!amount || isNaN(amount)) {
-      setTransactionStatus({
-        message: "Please enter a valid amount",
-        isError: true,
-        isLoading: false
+    let tx;
+    if (activePaymentMethod === "ETH" || activePaymentMethod === "BNB") {
+      tx = await signer.sendTransaction({
+        to: DESTINATION_WALLET,
+        value: ethers.utils.parseEther(amount)
       });
-      return;
+    } else if (activePaymentMethod === "USDT") {
+      const contract = new ethers.Contract(USDT_CONTRACT, USDT_ABI, signer);
+      const amountUnits = ethers.utils.parseUnits(amount, 6);
+      tx = await contract.transfer(DESTINATION_WALLET, amountUnits);
     }
-
-    const usdAmount = parseFloat(amount);
-    const ethToSend = usdAmount * 0.00002067; // ETH/USD rate
-    const minETH = 0.01413;
-
-    if (ethToSend < minETH) {
-      setTransactionStatus({
-        message: `Minimum purchase: ${minETH} ETH ($${(minETH/0.00002067).toFixed(2)})`,
-        isError: true,
-        isLoading: false
-      });
-      return;
-    }
-
-    try {
-      setTransactionStatus({
-        message: "Preparing transaction...",
-        isError: false,
-        isLoading: true
-      });
-
-      const transaction = prepareContractCall({
-        contract: {
-          address: contractAddress,
-          abi,
-        },
-        method: "buyWithETH",
-        params: [Math.floor(usdAmount * 1e6)],
-        value: toWei(ethToSend.toString()),
-      });
-
-      setTransactionStatus({
-        message: "Confirm in your wallet...",
-        isError: false,
-        isLoading: true
-      });
-
-      await sendTransaction(transaction);
-
-      setTransactionStatus({
-        message: "✅ Purchase successful!",
-        isError: false,
-        isLoading: false
-      });
-
-    } catch (error) {
-      console.error("Transaction error:", error);
-      let errorMessage = "Transaction failed";
-      
-      if (error.message.includes("user rejected")) {
-        errorMessage = "Transaction cancelled";
-      } else if (error.message.includes("insufficient funds")) {
-        errorMessage = "Insufficient ETH balance";
-      }
-
-      setTransactionStatus({
-        message: `❌ ${errorMessage}`,
-        isError: true,
-        isLoading: false
-      });
-    }
-  }, [storedWallet, amount, sendTransaction]);
+    setTransactionStatus({ isLoading: true, message: "Transaction sent: " + tx.hash, isError: false });
+    await tx.wait();
+    setTransactionStatus({ isLoading: false, message: "Transaction confirmed!", isError: false });
+  } catch (err) {
+    setTransactionStatus({ isLoading: false, message: "Transaction failed: " + err.message, isError: true });
+  }
+}
   // Modal handlers (keep existing)
   const handleOpenCurrencyModal = () => setIsCurrencyModalOpen(true);
   const handleCloseCurrencyModal = () => setIsCurrencyModalOpen(false);
@@ -245,6 +206,7 @@ useEffect(() => {
                 handleBuy={handleBuy}
                 transactionStatus={transactionStatus}
                 handleOpenCurrencyModal={handleOpenCurrencyModal}
+                handleOpenModal={handleOpenModal}
               />
             </div>
           ) : (
