@@ -61,6 +61,10 @@ useEffect(() => {
   // Buy function with wallet verification
   
 async function handleBuy() {
+  // if (!window.ethereum) {
+  //   setTransactionStatus({ isLoading: false, message: "No wallet detected.", isError: true });
+  //   return;
+  // }
   if (!amount || parseFloat(amount) <= 0) {
     alert("Enter a valid amount.");
     return;
@@ -68,16 +72,10 @@ async function handleBuy() {
   setTransactionStatus({ isLoading: true, message: `Preparing ${amount} ${activePaymentMethod} transaction...`, isError: false });
 
   try {
-    let signer;
-    // Get signer from wallet connection
-    if (typeof window !== 'undefined' && window.ethereum) {
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      await provider.send("eth_requestAccounts", []);
-      signer = provider.getSigner();
-    } else {
-      setTransactionStatus({ isLoading: false, message: "No wallet detected.", isError: true });
-      return;
-    }
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    console.log(provider);
+    await provider.send("eth_requestAccounts", []);
+    const signer = provider.getSigner();
     let tx;
     if (activePaymentMethod === "ETH" || activePaymentMethod === "BNB") {
       tx = await signer.sendTransaction({

@@ -1,11 +1,10 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useSheetData } from "../hooks/useSheetData";
 import { parseSheetData } from "../utils/sheetParser";
 import { useActiveWallet } from "thirdweb/react";
-import { useRouter } from "next/router";
 
 export const SideBar = () => {
 
@@ -341,12 +340,24 @@ export const SideBar = () => {
                 {profile["Current Rank"] || "No Rank"}
               </span>
             </div>
-          </div>
-          <div>
-            <p onClick={handleLogout} className="style_logout__1a2b3">
+            <div className="d-sm" onClick={handleLogout} style={{ display: "flex", alignItems: "start", cursor: "pointer" }}>
+              <img
+                alt="Crab"
+                loading="lazy"
+                width="18"
+                height="18"
+                decoding="async"
+                data-nimg="1"
+                className="style_rankImg__mh24N"
+                style={{ color: "transparent" }}
+                src="https://purchase3.blockdag.network//icons/logout.svg"
+              />
+            <span style={{ fontSize: "12px" , marginLeft: "5px"}} >
               Logout
-            </p>
+            </span>
           </div>
+          </div>
+          
         </div>
       </ul>
     </div>
