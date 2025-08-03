@@ -33,13 +33,13 @@ const Profile = () => {
         src="https://purchase3.blockdag.network/images/ranks/crab.svg" 
         style={{ color: 'transparent' }} 
       /> 
-      {storedWallet}
+      0xc7...3
     </p>
   </div>
-  <div className="profile_info__hpTVz">
+  {/* <div className="profile_info__hpTVz">
     <p className="style_text__Z44aT style_sm__RimS5 style_primary__o7qgw style_font-700__9q48B">Total Transactions</p>
     <p className="style_text__Z44aT style_md__ZQhe4">0.00</p>
-  </div>
+  </div> */}
 </div>
         <div className="profile_userRank__sL4Ki">
           <div className="profile_rankInfoArea__dHcT1">
