@@ -33,7 +33,7 @@ const Profile = () => {
         src="https://purchase3.blockdag.network/images/ranks/crab.svg" 
         style={{ color: 'transparent' }} 
       /> 
-      0xc7fb...d93
+      {storedWallet}
     </p>
   </div>
   <div className="profile_info__hpTVz">
@@ -47,14 +47,14 @@ const Profile = () => {
               <p className="style_text__Z44aT style_sm__RimS5 style_primary__o7qgw style_font-700__9q48B">Your Current Rank</p>
               <p className="style_text__Z44aT style_md__ZQhe4">
                 <img alt="Crab" loading="lazy" width="24" height="24" decoding="async" data-nimg="1" src="https://purchase3.blockdag.network/images/ranks/crab.svg" style={{ color: 'transparent' }} />
-                <span className="style_text__Z44aT style_md__ZQhe4">Crab - Level 1</span>
+                <span className="style_text__Z44aT style_md__ZQhe4"> {profile["Current Rank"] || "No Rank"} - Level 1</span>
               </p>
             </div>
             <div className="profile_info__hpTVz">
               <p className="style_text__Z44aT style_sm__RimS5 style_primary__o7qgw style_font-700__9q48B">Next Rank</p>
               <p className="style_text__Z44aT style_md__ZQhe4">
                 <img alt="Turtle" loading="lazy" width="24" height="24" decoding="async" data-nimg="1" src="https://purchase3.blockdag.network/images/ranks/turtle.svg" style={{ color: 'transparent' }} />
-                <span className="style_text__Z44aT style_md__ZQhe4">Turtle - 100.0% to next level</span>
+                <span className="style_text__Z44aT style_md__ZQhe4">{profile["Next rank"] || "No Rank"} - 100.0% to next level</span>
               </p>
             </div>
           </div>
@@ -71,7 +71,7 @@ const Profile = () => {
             </svg>
             <span className="style_text__Z44aT style_sm__RimS5">
               You need <span className="style_text__Z44aT style_sm__RimS5 style_primary__o7qgw">
-                <a href="/#buy">13.33K more BDAG</a>
+                <a href="/#buy">{profile["req to level up"]} more BDAG</a>
               </span> coins to level up.
             </span>
           </p>
@@ -85,7 +85,7 @@ const Profile = () => {
           <div className="profile_stat__q4375">
             <p className="style_text__Z44aT style_md__ZQhe4 style_primary__o7qgw">Wallet Address</p>
             <p className="style_text__Z44aT style_md__ZQhe4 profile_walletAddress__KmTeP style_font-700__9q48B">
-              0xc7fbfD46d4b712Dcf3F035acEe15E261F5A5ad93
+              {storedWallet}
             </p>
           </div>
           <div className="profile_btns___ypRC">
