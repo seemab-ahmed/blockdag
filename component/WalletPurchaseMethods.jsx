@@ -62,7 +62,16 @@ export default function WalletPurchaseMethods({
   const [prices, setPrices] = useState({ ETH: null, BNB: null }); 
   const [minAmounts, setMinAmounts] = useState({ ETH: null, BNB: null, USDT: profile["Min to purchase"] ?? MIN_PURCHASE_USD });
   const [minText, setMinText] = useState('Loading prices...');
-  const minAmmount = profile["Min to purchase"] ?? MIN_PURCHASE_USD;
+   const minAmmount = profile && profile["Min to purchase"] ? profile["Min to purchase"] : MIN_PURCHASE_USD;
+   const oneBdgPrice = profile && profile["1 Bdag"] ? profile["1 Bdag"] : 0.0276;
+
+   // Calculate BDAG worth from input amount and current price
+   const bdagWorth = (() => {
+     const amt = parseFloat(amount);
+     const price = parseFloat(oneBdgPrice);
+     if (!amt || !price) return '0.00';
+     return (amt / price).toFixed(2);
+   })();
 
   // Fetch live prices
   useEffect(() => {
@@ -159,7 +168,7 @@ export default function WalletPurchaseMethods({
         </div>
         <div className="wallet_purchaseMethodsTitle__SOQtE">
           <p className="style_text__Z44aT style_sm__RimS5 style_primary__o7qgw">BDAG Worth </p>
-          <p className="style_text__Z44aT style_lg__AdDq0 style_font-700__9q48B">0.00 BDAG</p>
+       <p className="style_text__Z44aT style_lg__AdDq0 style_font-700__9q48B">{bdagWorth} BDAG</p>
         </div>
         <button
           type="button"
