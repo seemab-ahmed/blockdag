@@ -28,7 +28,7 @@ export default function ConnectOnly() {
   const [error, setError] = useState("");
   const [walletAddress, setWalletAddress] = useState("");
   const [popup, setPopup] = useState({ show: false, message: "", type: "" });
-
+  console.log("Wallet:", wallet);
   useEffect(() => {
     const getAddress = async () => {
       if (connectionStatus === "connected" && wallet) {

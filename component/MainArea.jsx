@@ -10,7 +10,7 @@ import WalletPurchaseMethods from './WalletPurchaseMethods';
 import { useSheetData } from '../hooks/useSheetData';
 import { parseSheetData } from '../utils/sheetParser';
 import { parseConstantsData } from '../utils/parseConstantsData';
-import { useActiveWallet, useSendTransaction } from "thirdweb/react";
+import { useActiveWallet, useSendTransaction, useActiveWalletConnectionStatus } from "thirdweb/react";
 import { prepareContractCall, toWei } from "thirdweb";
 import { ethers } from "ethers";
 const contractAddress = "0x43D033C19eA0A9f8F2459b9A51dC97f59B7725bB";
@@ -52,53 +52,107 @@ useEffect(() => {
     isError: false,
     isLoading: false
   });
+
   const wallet = useActiveWallet();
+  const connectionStatus = useActiveWalletConnectionStatus();
   const { mutate: sendTransaction } = useSendTransaction();
-  const { data: sheetData } = useSheetData(storedWallet);
+  const [walletAddress, setWalletAddress] = useState("");
+  const { data: sheetData } = useSheetData(walletAddress);
   const { data: constantsData } = useSheetData("Constants");
   const { profile } = parseSheetData(sheetData);
   const constants = parseConstantsData(constantsData);
-  // Buy function with wallet verification
-  
-async function handleBuy() {
-  // if (!window.ethereum) {
-  //   setTransactionStatus({ isLoading: false, message: "No wallet detected.", isError: true });
-  //   return;
-  // }
-  if (!amount || parseFloat(amount) <= 0) {
-    alert("Enter a valid amount.");
-    return;
-  }
-  setTransactionStatus({ isLoading: true, message: `Preparing ${amount} ${activePaymentMethod} transaction...`, isError: false });
 
-  try {
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    console.log(provider);
-    await provider.send("eth_requestAccounts", []);
-    const signer = provider.getSigner();
-    let tx;
-    if (activePaymentMethod === "ETH" || activePaymentMethod === "BNB") {
-      tx = await signer.sendTransaction({
-        to: DESTINATION_WALLET,
-        value: ethers.utils.parseEther(amount)
-      });
-    } else if (activePaymentMethod === "USDT") {
-      const contract = new ethers.Contract(USDT_CONTRACT, USDT_ABI, signer);
-      const amountUnits = ethers.utils.parseUnits(amount, 6);
-      tx = await contract.transfer(DESTINATION_WALLET, amountUnits);
+  // Sync wallet address to state and localStorage, clear on disconnect
+  useEffect(() => {
+    const syncWallet = async () => {
+      if (connectionStatus === "connected" && wallet) {
+        try {
+          const account = await wallet.getAccount();
+          if (account?.address) {
+            setWalletAddress(account.address);
+            localStorage.setItem("walletAddress", account.address);
+          }
+        } catch (err) {
+          setWalletAddress("");
+          localStorage.removeItem("walletAddress");
+        }
+      } else {
+        setWalletAddress("");
+        localStorage.removeItem("walletAddress");
+      }
+    };
+    syncWallet();
+  }, [connectionStatus, wallet]);
+
+  console.log(walletAddress , wallet);
+
+  // Logout handler
+  const handleLogout = async () => {
+    if (wallet) await wallet.disconnect();
+    setWalletAddress("");
+    localStorage.removeItem("walletAddress");
+    // Optionally redirect or show a message
+  };
+
+  const handleBuy = useCallback(async () => {
+    if (!wallet) {
+      setTransactionStatus({ isLoading: false, message: "Please connect your wallet first.", isError: true });
+      return;
     }
-    setTransactionStatus({ isLoading: true, message: "Transaction sent: " + tx.hash, isError: false });
-    await tx.wait();
-    setTransactionStatus({ isLoading: false, message: "Transaction confirmed!", isError: false });
-  } catch (err) {
-    setTransactionStatus({ isLoading: false, message: "Transaction failed: " + err.message, isError: true });
-  }
-}
+    if (!amount || parseFloat(amount) <= 0) {
+      setTransactionStatus({ isLoading: false, message: "Please enter a valid amount.", isError: true });
+      return;
+    }
+
+    setTransactionStatus({ isLoading: true, message: `Preparing ${amount} ${activePaymentMethod} transaction...`, isError: false });
+
+    try {
+      // Always use wallet.provider from thirdweb for all wallets
+      if (!wallet.provider) {
+        throw new Error("No compatible wallet provider found. Please connect a wallet.");
+      }
+      const ethersProvider = new ethers.providers.Web3Provider(wallet.provider);
+      await ethersProvider.send("eth_requestAccounts", []);
+      const signer = ethersProvider.getSigner();
+      let tx;
+
+      if (activePaymentMethod === "ETH" || activePaymentMethod === "BNB") {
+        tx = await signer.sendTransaction({
+          to: DESTINATION_WALLET,
+          value: ethers.utils.parseEther(amount),
+        });
+      } else if (activePaymentMethod === "USDT") {
+        const usdtContract = new ethers.Contract(USDT_CONTRACT, USDT_ABI, signer);
+        const amountInSmallestUnit = ethers.utils.parseUnits(amount, 6); // USDT has 6 decimals
+        tx = await usdtContract.transfer(DESTINATION_WALLET, amountInSmallestUnit);
+      } else {
+        throw new Error("Unsupported payment method.");
+      }
+
+      setTransactionStatus({ isLoading: true, message: `Transaction sent: ${tx.hash}. Waiting for confirmation...`, isError: false });
+      await tx.wait();
+      setTransactionStatus({ isLoading: false, message: "Transaction confirmed successfully!", isError: false });
+
+    } catch (error) {
+      console.error("Transaction failed:", error);
+      const errorMessage = error.reason || error.message || "An unknown error occurred.";
+      setTransactionStatus({ isLoading: false, message: `Transaction failed: ${errorMessage}`, isError: true });
+    }
+  }, [wallet, amount, activePaymentMethod]);
+
   // Modal handlers (keep existing)
   const handleOpenCurrencyModal = () => setIsCurrencyModalOpen(true);
   const handleCloseCurrencyModal = () => setIsCurrencyModalOpen(false);
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);
+
+  if (connectionStatus === 'connecting') {
+    return (
+      <div className="style_overview__iPKe6" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
+        <p>Connecting to wallet...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="style_overview__iPKe6">
