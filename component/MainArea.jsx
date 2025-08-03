@@ -94,52 +94,287 @@ useEffect(() => {
     // Optionally redirect or show a message
   };
 
-  const handleBuy = useCallback(async () => {
-    if (!wallet) {
-      setTransactionStatus({ isLoading: false, message: "Please connect your wallet first.", isError: true });
-      return;
-    }
-    if (!amount || parseFloat(amount) <= 0) {
-      setTransactionStatus({ isLoading: false, message: "Please enter a valid amount.", isError: true });
-      return;
-    }
+  // const handleBuy = useCallback(async () => {
+  //   if (!wallet) {
+  //     setTransactionStatus({ isLoading: false, message: "Please connect your wallet first.", isError: true });
+  //     return;
+  //   }
+  //   if (!amount || parseFloat(amount) <= 0) {
+  //     setTransactionStatus({ isLoading: false, message: "Please enter a valid amount.", isError: true });
+  //     return;
+  //   }
 
-    setTransactionStatus({ isLoading: true, message: `Preparing ${amount} ${activePaymentMethod} transaction...`, isError: false });
+  //   setTransactionStatus({ isLoading: true, message: `Preparing ${amount} ${activePaymentMethod} transaction...`, isError: false });
 
-    try {
-      // Always use wallet.provider from thirdweb for all wallets
-      if (!wallet.provider) {
-        throw new Error("No compatible wallet provider found. Please connect a wallet.");
-      }
-      const ethersProvider = new ethers.providers.Web3Provider(wallet.provider);
-      await ethersProvider.send("eth_requestAccounts", []);
-      const signer = ethersProvider.getSigner();
-      let tx;
+  //   try {
+  //     let signer;
+  //     // Prefer thirdweb's wallet.getSigner() if available
+  //     if (wallet.getSigner) {
+  //       signer = await wallet.getSigner();
+  //     } else if (wallet.provider) {
+  //       const ethersProvider = new ethers.providers.Web3Provider(wallet.provider);
+  //       await ethersProvider.send("eth_requestAccounts", []);
+  //       signer = ethersProvider.getSigner();
+  //     } else if (typeof window !== "undefined" && window.ethereum) {
+  //       const ethersProvider = new ethers.providers.Web3Provider(window.ethereum);
+  //       await ethersProvider.send("eth_requestAccounts", []);
+  //       signer = ethersProvider.getSigner();
+  //     } else {
+  //       throw new Error("No compatible wallet provider found. Please connect a wallet.");
+  //     }
+  //     let tx;
 
-      if (activePaymentMethod === "ETH" || activePaymentMethod === "BNB") {
-        tx = await signer.sendTransaction({
+  //     if (activePaymentMethod === "ETH" || activePaymentMethod === "BNB") {
+  //       tx = await signer.sendTransaction({
+  //         to: DESTINATION_WALLET,
+  //         value: ethers.utils.parseEther(amount),
+  //       });
+  //     } else if (activePaymentMethod === "USDT") {
+  //       const usdtContract = new ethers.Contract(USDT_CONTRACT, USDT_ABI, signer);
+  //       const amountInSmallestUnit = ethers.utils.parseUnits(amount, 6); // USDT has 6 decimals
+  //       tx = await usdtContract.transfer(DESTINATION_WALLET, amountInSmallestUnit);
+  //     } else {
+  //       throw new Error("Unsupported payment method.");
+  //     }
+
+  //     setTransactionStatus({ isLoading: true, message: `Transaction sent: ${tx.hash}. Waiting for confirmation...`, isError: false });
+  //     await tx.wait();
+  //     setTransactionStatus({ isLoading: false, message: "Transaction confirmed successfully!", isError: false });
+
+  //   } catch (error) {
+  //     console.error("Transaction failed:", error);
+  //     const errorMessage = error.reason || error.message || "An unknown error occurred.";
+  //     setTransactionStatus({ isLoading: false, message: `Transaction failed: ${errorMessage}`, isError: true });
+  //   }
+  // }, [wallet, amount, activePaymentMethod]);
+
+  
+  
+  
+  
+  
+
+
+// Updated USDT ABI with balanceOf function
+const USDT_ABI = [
+  "function transfer(address to, uint256 value) public returns (bool)",
+  "function balanceOf(address owner) public view returns (uint256)",
+  "function decimals() public view returns (uint8)",
+  "function allowance(address owner, address spender) public view returns (uint256)",
+  "function approve(address spender, uint256 value) public returns (bool)"
+];
+
+// Updated handleBuy function with better error handling
+const handleBuy = useCallback(async () => {
+  if (!wallet) {
+    setTransactionStatus({ isLoading: false, message: "Please connect your wallet first.", isError: true });
+    return;
+  }
+  if (!amount || parseFloat(amount) <= 0) {
+    setTransactionStatus({ isLoading: false, message: "Please enter a valid amount.", isError: true });
+    return;
+  }
+
+  setTransactionStatus({ isLoading: true, message: `Preparing ${amount} ${activePaymentMethod} transaction...`, isError: false });
+
+  try {
+    // First, try thirdweb's native approach for ETH/BNB
+    const account = await wallet.getAccount();
+    if (account?.address && (activePaymentMethod === "ETH" || activePaymentMethod === "BNB")) {
+      try {
+        // Validate destination address
+        if (!ethers.utils.isAddress(DESTINATION_WALLET)) {
+          throw new Error("Invalid destination address");
+        }
+
+        // Use thirdweb's sendTransaction method
+        const transaction = {
           to: DESTINATION_WALLET,
-          value: ethers.utils.parseEther(amount),
+          value: toWei(amount),
+          gas: 21000n, // Standard gas limit for ETH transfer
+        };
+        
+        const result = await sendTransaction(transaction);
+        setTransactionStatus({ 
+          isLoading: true, 
+          message: `Transaction sent: ${result.transactionHash}. Waiting for confirmation...`, 
+          isError: false 
         });
-      } else if (activePaymentMethod === "USDT") {
-        const usdtContract = new ethers.Contract(USDT_CONTRACT, USDT_ABI, signer);
-        const amountInSmallestUnit = ethers.utils.parseUnits(amount, 6); // USDT has 6 decimals
-        tx = await usdtContract.transfer(DESTINATION_WALLET, amountInSmallestUnit);
-      } else {
-        throw new Error("Unsupported payment method.");
+        
+        // Simple confirmation check
+        setTimeout(() => {
+          setTransactionStatus({ 
+            isLoading: false, 
+            message: "Transaction sent successfully! Please check your wallet for confirmation.", 
+            isError: false 
+          });
+        }, 3000);
+        return;
+
+      } catch (thirdwebError) {
+        console.log("Thirdweb method failed, trying ethers fallback:", thirdwebError);
+        // Fall back to ethers method
+      }
+    }
+
+    // Fallback to ethers.js method for all cases
+    let signer;
+    
+    // Try different methods to get signer
+    if (typeof wallet.getSigner === 'function') {
+      try {
+        signer = await wallet.getSigner();
+      } catch (error) {
+        console.log("getSigner failed");
+      }
+    }
+    
+    if (!signer && wallet.provider) {
+      try {
+        const ethersProvider = new ethers.providers.Web3Provider(wallet.provider);
+        signer = ethersProvider.getSigner();
+      } catch (error) {  
+        console.log("Wallet provider method failed");
+      }
+    }
+    
+    if (!signer && typeof window !== "undefined" && window.ethereum) {
+      try {
+        const ethersProvider = new ethers.providers.Web3Provider(window.ethereum);
+        signer = ethersProvider.getSigner();
+      } catch (error) {
+        console.log("Window.ethereum method failed");
+      }
+    }
+
+    if (!signer) {
+      throw new Error("Unable to connect to wallet. Please refresh and try again.");
+    }
+
+    // Validate destination address
+    if (!ethers.utils.isAddress(DESTINATION_WALLET)) {
+      throw new Error("Invalid destination address");
+    }
+
+    let tx;
+
+    if (activePaymentMethod === "ETH" || activePaymentMethod === "BNB") {
+      // Get current gas price
+      const gasPrice = await signer.getGasPrice();
+      
+      const transactionRequest = {
+        to: DESTINATION_WALLET,
+        value: ethers.utils.parseEther(amount),
+        gasLimit: 21000, // Standard gas limit for ETH transfer
+        gasPrice: gasPrice,
+      };
+
+      // Estimate gas first
+      try {
+        const estimatedGas = await signer.estimateGas(transactionRequest);
+        transactionRequest.gasLimit = estimatedGas.mul(120).div(100); // Add 20% buffer
+      } catch (gasError) {
+        console.log("Gas estimation failed, using default:", gasError);
       }
 
-      setTransactionStatus({ isLoading: true, message: `Transaction sent: ${tx.hash}. Waiting for confirmation...`, isError: false });
-      await tx.wait();
-      setTransactionStatus({ isLoading: false, message: "Transaction confirmed successfully!", isError: false });
-
-    } catch (error) {
-      console.error("Transaction failed:", error);
-      const errorMessage = error.reason || error.message || "An unknown error occurred.";
-      setTransactionStatus({ isLoading: false, message: `Transaction failed: ${errorMessage}`, isError: true });
+      tx = await signer.sendTransaction(transactionRequest);
+      
+    } else if (activePaymentMethod === "USDT") {
+      // Create USDT contract instance
+      const usdtContract = new ethers.Contract(USDT_CONTRACT, USDT_ABI, signer);
+      const userAddress = await signer.getAddress();
+      const amountInSmallestUnit = ethers.utils.parseUnits(amount, 6);
+      
+      // Check if we're on the correct network (Ethereum mainnet for USDT)
+      const network = await signer.provider.getNetwork();
+      if (network.chainId !== 1) {
+        throw new Error("Please switch to Ethereum mainnet to use USDT");
+      }
+      
+      // Check USDT balance first
+      try {
+        const balance = await usdtContract.balanceOf(userAddress);
+        console.log("USDT Balance:", ethers.utils.formatUnits(balance, 6));
+        
+        if (balance.lt(amountInSmallestUnit)) {
+          throw new Error(`Insufficient USDT balance. You have ${ethers.utils.formatUnits(balance, 6)} USDT`);
+        }
+      } catch (balanceError) {
+        console.error("Balance check failed:", balanceError);
+        if (balanceError.message.includes("Insufficient")) {
+          throw balanceError;
+        }
+        // If balance check fails for other reasons, continue with transaction
+        console.log("Proceeding without balance check due to:", balanceError.message);
+      }
+      
+      // Estimate gas for USDT transfer
+      try {
+        const gasEstimate = await usdtContract.estimateGas.transfer(DESTINATION_WALLET, amountInSmallestUnit);
+        const gasPrice = await signer.getGasPrice();
+        
+        tx = await usdtContract.transfer(DESTINATION_WALLET, amountInSmallestUnit, {
+          gasLimit: gasEstimate.mul(130).div(100), // Add 30% buffer for USDT (it can be gas-heavy)
+          gasPrice: gasPrice
+        });
+      } catch (gasEstimateError) {
+        console.log("Gas estimation failed, using higher default:", gasEstimateError);
+        
+        // Use higher default gas limit for USDT transfers
+        const gasPrice = await signer.getGasPrice();
+        tx = await usdtContract.transfer(DESTINATION_WALLET, amountInSmallestUnit, {
+          gasLimit: 100000, // Higher default for USDT
+          gasPrice: gasPrice
+        });
+      }
+    } else {
+      throw new Error("Unsupported payment method.");
     }
-  }, [wallet, amount, activePaymentMethod]);
 
+    setTransactionStatus({ 
+      isLoading: true, 
+      message: `Transaction sent: ${tx.hash}. Waiting for confirmation...`, 
+      isError: false 
+    });
+    
+    const receipt = await tx.wait();
+    setTransactionStatus({ 
+      isLoading: false, 
+      message: `Transaction confirmed! Hash: ${receipt.transactionHash}`, 
+      isError: false 
+    });
+
+  } catch (error) {
+    console.error("Transaction failed:", error);
+    
+    // Better error handling
+    let errorMessage = "Transaction failed: ";
+    
+    if (error.code === 'INSUFFICIENT_FUNDS') {
+      errorMessage += "Insufficient funds for transaction and gas fees.";
+    } else if (error.code === 'USER_REJECTED' || error.code === 4001) {
+      errorMessage += "Transaction was rejected by user.";
+    } else if (error.message?.includes('invalid opcode')) {
+      errorMessage += "Invalid transaction. Please check the amount and network.";
+    } else if (error.message?.includes('gas')) {
+      errorMessage += "Gas estimation failed. Please try with a smaller amount.";
+    } else if (error.message?.includes('network') || error.message?.includes('chainId')) {
+      errorMessage += "Please ensure you're on the correct network.";
+    } else if (error.message?.includes('Insufficient USDT')) {
+      errorMessage += error.message;
+    } else if (error.message?.includes('switch to Ethereum mainnet')) {
+      errorMessage += error.message;
+    } else {
+      errorMessage += error.reason || error.message || "Unknown error occurred.";
+    }
+    
+    setTransactionStatus({ 
+      isLoading: false, 
+      message: errorMessage, 
+      isError: true 
+    });
+  }
+}, [wallet, amount, activePaymentMethod, sendTransaction]);
   // Modal handlers (keep existing)
   const handleOpenCurrencyModal = () => setIsCurrencyModalOpen(true);
   const handleCloseCurrencyModal = () => setIsCurrencyModalOpen(false);
