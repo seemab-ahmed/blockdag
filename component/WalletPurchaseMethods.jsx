@@ -1,5 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
+import Popup from './Popup';
 import { useSheetData } from '../hooks/useSheetData';
 import { parseSheetData } from '../utils/sheetParser';
 
@@ -72,6 +73,24 @@ export default function WalletPurchaseMethods({
      if (!amt || !price) return '0.00';
      return (amt / price).toFixed(2);
    })();
+
+   // Popup state for error/success
+   const [popup, setPopup] = useState({ open: false, type: '', title: '', message: '' });
+
+   // Show popup when transactionStatus.message changes
+   useEffect(() => {
+     if (transactionStatus.message) {
+       setPopup({
+         open: true,
+         type: transactionStatus.isError ? 'error' : 'success',
+         title: transactionStatus.isError ? 'Error' : 'Success',
+         message: transactionStatus.message.length > 100 ? transactionStatus.message.slice(0, 100) + '...' : transactionStatus.message
+       });
+     }
+   }, [transactionStatus.message, transactionStatus.isError]);
+
+   // Handler to close popup
+   const handleClosePopup = () => setPopup(p => ({ ...p, open: false }));
 
   // Fetch live prices
   useEffect(() => {
@@ -179,12 +198,14 @@ export default function WalletPurchaseMethods({
           {transactionStatus.isLoading ? "Processing..." : "Buy Coins"}
           <span className="style_wrap__yFGLp"></span>
         </button>
-        {transactionStatus.message && (
-          <p className={`mt-2 text-center text-sm ${
-            transactionStatus.isError ? "text-red-500" : "text-green-500"
-          }`}>
-            {transactionStatus.message}
-          </p>
+        {/* Popup for transaction status */}
+        {popup.open && (
+          <Popup
+            title={popup.title}
+            message={popup.message}
+            type={popup.type}
+            onClose={handleClosePopup}
+          />
         )}
       </div>
       <div translate="no" className="promoCode_promocode__fp4Nm undefined">
