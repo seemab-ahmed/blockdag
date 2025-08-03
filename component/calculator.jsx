@@ -67,7 +67,7 @@ const Calculator = () => {
   }, [dragging]);
 
   return (
-    <div className="style_calculator__5UHYM" style={{ paddingBottom: '140px !important' }}>
+    <div className="style_calculator__5UHYM" >
       <div className="style_tabs__S8H6b">
         <div
           className={`style_tabItem__JsB2S ${activeTab === 'coin' ? 'style_active__1Yrok' : ''}`}
@@ -83,7 +83,7 @@ const Calculator = () => {
         </div>
       </div>
 
-      <div className="style_box__P4d5J">
+      <div className="style_box__P4d5J" style={{ paddingBottom: '140px !important' }}>
         <div className="style_coins__mi9VT">
           <p className="style_text__Z44aT style_lg__AdDq0 style_title__rXABb">
             Calculate your profits on coin launch
@@ -132,7 +132,7 @@ const Calculator = () => {
             <div
   className="style_bar__V59_K"
   ref={barRef}
-  style={{ position: "relative" , marginBottom: "20px" }}
+  style={{ position: "relative" , marginTop: "20px" }}
   onMouseDown={e => startDrag(e)}
   onTouchStart={e => startDrag(e)}
 >

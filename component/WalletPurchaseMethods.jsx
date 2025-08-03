@@ -66,12 +66,21 @@ export default function WalletPurchaseMethods({
    const minAmmount = profile && profile["Min to purchase"] ? profile["Min to purchase"] : MIN_PURCHASE_USD;
    const oneBdgPrice = profile && profile["1 Bdag"] ? profile["1 Bdag"] : 0.0276;
 
-   // Calculate BDAG worth from input amount and current price
-   const bdagWorth = (() => {
+   // Calculate USD value and BDAG worth from input amount and current price
+   const getUsdValue = () => {
      const amt = parseFloat(amount);
+     if (!amt) return 0;
+     if (activePaymentMethod === 'USDT') return amt;
+     if (activePaymentMethod === 'ETH' && prices.ETH) return amt * prices.ETH;
+     if (activePaymentMethod === 'BNB' && prices.BNB) return amt * prices.BNB;
+     return 0;
+   };
+
+   const usdValue = getUsdValue();
+   const bdagWorth = (() => {
      const price = parseFloat(oneBdgPrice);
-     if (!amt || !price) return '0.00';
-     return (amt / price).toFixed(2);
+     if (!usdValue || !price) return '0.00';
+     return (usdValue / price).toFixed(2);
    })();
 
    // Popup state for error/success
@@ -125,10 +134,9 @@ export default function WalletPurchaseMethods({
   }, [activePaymentMethod, minAmounts]);
 
   // Enable/disable buy button
+  // Enable/disable buy button based on USD value
   const isBuyEnabled = (() => {
-    const entered = parseFloat(amount) || 0;
-    const minRequired = parseFloat(minAmounts[activePaymentMethod]);
-    return entered >= minRequired && !transactionStatus.isLoading;
+    return usdValue >= minAmmount && !transactionStatus.isLoading;
   })();
   return (
     <div className="wallet_walletContent__3lxb6">
