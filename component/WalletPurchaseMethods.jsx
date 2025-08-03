@@ -98,8 +98,15 @@ export default function WalletPurchaseMethods({
      }
    }, [transactionStatus.message, transactionStatus.isError]);
 
-   // Handler to close popup
-   const handleClosePopup = () => setPopup(p => ({ ...p, open: false }));
+   // Handler to close popup and reset transactionStatus.message
+   const handleClosePopup = () => {
+     setPopup(p => ({ ...p, open: false }));
+     // Reset transactionStatus.message if possible (if parent controls it)
+     if (typeof transactionStatus.setMessage === 'function') {
+       transactionStatus.setMessage('');
+     }
+     // If not, trigger a re-render by using a local state
+   };
 
   // Fetch live prices
   useEffect(() => {
