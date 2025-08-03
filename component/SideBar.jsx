@@ -4,8 +4,27 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSheetData } from "../hooks/useSheetData";
 import { parseSheetData } from "../utils/sheetParser";
+import { useActiveWallet } from "thirdweb/react";
+import { useRouter } from "next/router";
 
 export const SideBar = () => {
+
+
+ const wallet = useActiveWallet();
+  const router = useRouter();
+  const handleLogout = async () => {
+    if (wallet && typeof wallet.disconnect === "function") {
+      console.log("Wallet disconnected successfully");
+      await wallet.disconnect();
+    }
+    if (typeof window !== "undefined") {
+  sessionStorage.setItem("justLoggedOut", "true");
+  localStorage.removeItem("walletAddress");
+  // ...disconnect wallet, redirect, etc.
+}
+    router.push("/");
+  };
+
   const [storedWallet, setStoredWallet] = useState(null);
 
   useEffect(() => {
@@ -322,6 +341,11 @@ export const SideBar = () => {
                 {profile["Current Rank"] || "No Rank"}
               </span>
             </div>
+          </div>
+          <div>
+            <p onClick={handleLogout} className="style_logout__1a2b3">
+              Logout
+            </p>
           </div>
         </div>
       </ul>

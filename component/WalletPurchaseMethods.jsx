@@ -61,9 +61,22 @@ export default function WalletPurchaseMethods({
   const { data: sheetData } = useSheetData(storedWallet);
   const { profile } = parseSheetData(sheetData);
   const [prices, setPrices] = useState({ ETH: null, BNB: null }); 
-  const [minAmounts, setMinAmounts] = useState({ ETH: null, BNB: null, USDT: profile["Min to purchase"] ?? MIN_PURCHASE_USD });
+  const [minAmounts, setMinAmounts] = useState({ ETH: null, BNB: null, USDT: null });
   const [minText, setMinText] = useState('Loading prices...');
-   const minAmmount = profile && profile["Min to purchase"] ? profile["Min to purchase"] : MIN_PURCHASE_USD;
+  // Always use latest profile value for minAmmount
+  const minAmmount = profile && profile["Min to purchase"] ? Number(profile["Min to purchase"]) : MIN_PURCHASE_USD;
+  // Update minAmounts when profile or prices change
+  useEffect(() => {
+    setMinAmounts(prev => {
+      const eth = prices.ETH ? (minAmmount / prices.ETH).toFixed(6) : null;
+      const bnb = prices.BNB ? (minAmmount / prices.BNB).toFixed(6) : null;
+      return {
+        ETH: eth,
+        BNB: bnb,
+        USDT: minAmmount
+      };
+    });
+  }, [minAmmount, prices.ETH, prices.BNB]);
    const oneBdgPrice = profile && profile["1 Bdag"] ? profile["1 Bdag"] : 0.0276;
 
    // Calculate USD value and BDAG worth from input amount and current price
