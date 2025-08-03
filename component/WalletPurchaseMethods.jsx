@@ -83,18 +83,19 @@ export default function WalletPurchaseMethods({
      return (usdValue / price).toFixed(2);
    })();
 
-   // Popup state for error/success
-   const [popup, setPopup] = useState({ open: false, type: '', title: '', message: '' });
+   // Popup state for error/success, add a key to force re-mount
+   const [popup, setPopup] = useState({ open: false, type: '', title: '', message: '', key: 0 });
 
-   // Show popup when transactionStatus.message changes
+   // Show popup when transactionStatus.message changes, always increment key to force re-mount
    useEffect(() => {
      if (transactionStatus.message) {
-       setPopup({
+       setPopup(prev => ({
          open: true,
          type: transactionStatus.isError ? 'error' : 'success',
          title: transactionStatus.isError ? 'Error' : 'Success',
-         message: transactionStatus.message.length > 100 ? transactionStatus.message.slice(0, 100) + '...' : transactionStatus.message
-       });
+         message: transactionStatus.message.length > 100 ? transactionStatus.message.slice(0, 100) + '...' : transactionStatus.message,
+         key: prev.key + 1
+       }));
      }
    }, [transactionStatus.message, transactionStatus.isError]);
 
@@ -216,6 +217,7 @@ export default function WalletPurchaseMethods({
         {/* Popup for transaction status */}
         {popup.open && (
           <Popup
+            key={popup.key}
             title={popup.title}
             message={popup.message}
             type={popup.type}

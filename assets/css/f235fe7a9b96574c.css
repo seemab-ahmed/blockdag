@@ -19,7 +19,7 @@
 }
 
 .style_overview__iPKe6>div {
-    position: relative;
+    /* position: relative; */
     border-radius: calc(var(--1)*20);
     border: 1px solid var(--Strokes-On-Dark-Stroke, rgba(0, 148, 255, .16));
     background: var(--bg-2);
