@@ -125,8 +125,8 @@
 //       {isChecking && (
 //         <div
 //           style={{
-//             position: 'fixed',
-//             top: 0,
+            // sessionStorage.setItem("blockVerify", "true");
+            // window.location.reload();
 //             left: 0,
 //             width: '100vw',
 //             height: '100vh',
@@ -278,10 +278,12 @@ export default function ConnectOnly() {
       } else {
         localStorage.removeItem("walletAddress");
         setPopup({ show: true, message: "Access restricted: Wallet not recognized. Disconnecting...", type: "error" });
+        if (wallet) wallet.disconnect();
         setTimeout(() => {
           setPopup({ show: false, message: "", type: "" });
-          if (wallet) wallet.disconnect();
           setWalletAddress("");
+          sessionStorage.setItem("justReloaded", "true");
+          window.location.reload();
         }, 5000);
       }
     } catch (err) {
@@ -295,15 +297,26 @@ export default function ConnectOnly() {
 
   useEffect(() => {
     if (walletAddress) {
+    if (typeof window !== "undefined" && sessionStorage.getItem("blockVerify") === "true") {
+      // Skip verification after reload due to access restriction
+      sessionStorage.removeItem("blockVerify");
+      return;
+    }
+    if (walletAddress) {
       verifyWallet();
     }
-  }, [walletAddress, verifyWallet]);
+  }
+}, [walletAddress, verifyWallet]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
       if (sessionStorage.getItem("justLoggedOut") === "true") {
         sessionStorage.removeItem("justLoggedOut");
         window.location.reload();
+      }
+      if (sessionStorage.getItem("justReloaded") === "true") {
+        sessionStorage.removeItem("justReloaded");
+        // Do NOT reload again, just clear the flag
       }
     }
   }, []);
