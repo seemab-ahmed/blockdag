@@ -95,6 +95,172 @@ useEffect(() => {
   };
 
 
+// const handleBuy = useCallback(async () => {
+//   if (!wallet) {
+//     setTransactionStatus({ isLoading: false, message: "Please connect your wallet first.", isError: true });
+//     return;
+//   }
+//   if (!amount || parseFloat(amount) <= 0) {
+//     setTransactionStatus({ isLoading: false, message: "Please enter a valid amount.", isError: true });
+//     return;
+//   }
+
+//   setTransactionStatus({ isLoading: true, message: `Preparing ${amount} ${activePaymentMethod} transaction...`, isError: false });
+
+//   try {
+//     // Get account first
+//     const account = await wallet.getAccount();
+//     if (!account?.address) {
+//       throw new Error("Wallet not properly connected. Please reconnect.");
+//     }
+
+//     console.log("Connected wallet address:", account.address);
+
+//     // For ETH/BNB, prioritize thirdweb's native method (works best on mobile)
+//     if (activePaymentMethod === "ETH" || activePaymentMethod === "BNB") {
+//       try {
+//         console.log("Using thirdweb native transaction...");
+        
+//         const transaction = {
+//           to: DESTINATION_WALLET,
+//           value: toWei(amount),
+//         };
+        
+//         console.log("Transaction object:", transaction);
+        
+//         const result = await sendTransaction(transaction);
+//         console.log("Transaction result:", result);
+        
+//         setTransactionStatus({ 
+//           isLoading: false, 
+//           message: "Transaction sent successfully! Check your wallet for confirmation.", 
+//           isError: false 
+//         });
+//         return;
+
+//       } catch (thirdwebError) {
+//         console.error("Thirdweb transaction failed:", thirdwebError);
+        
+//         // If thirdweb fails, show user-friendly error
+//         if (thirdwebError.message?.includes('User rejected') || thirdwebError.code === 4001) {
+//           throw new Error("Transaction was cancelled by user.");
+//         } else if (thirdwebError.message?.includes('insufficient funds')) {
+//           throw new Error("Insufficient funds for transaction and gas fees.");
+//         } else {
+//           throw new Error("Transaction failed. Please try again or contact support.");
+//         }
+//       }
+//     }
+
+//     // For USDT, we need to fall back to ethers (but with better mobile support)
+//     if (activePaymentMethod === "USDT") {
+//       console.log("USDT transaction - attempting ethers fallback...");
+      
+//       let provider;
+//       let signer;
+
+//       // Try to get provider in order of preference for mobile
+//       if (typeof window !== "undefined" && window.ethereum) {
+//         console.log("Using window.ethereum...");
+//         try {
+//           // Request accounts explicitly
+//           await window.ethereum.request({ method: 'eth_requestAccounts' });
+//           provider = new ethers.providers.Web3Provider(window.ethereum);
+//           signer = provider.getSigner();
+//         } catch (error) {
+//           console.log("window.ethereum failed:", error);
+//         }
+//       }
+
+//       if (!signer && wallet.provider) {
+//         console.log("Using wallet.provider...");
+//         try {
+//           provider = new ethers.providers.Web3Provider(wallet.provider);
+//           signer = provider.getSigner();
+//         } catch (error) {
+//           console.log("wallet.provider failed:", error);
+//         }
+//       }
+
+//       if (!signer) {
+//         throw new Error("USDT transactions not supported on this device. Please use ETH instead.");
+//       }
+
+//       // Check network
+//       const network = await provider.getNetwork();
+//       if (network.chainId !== 1) {
+//         throw new Error("Please switch to Ethereum mainnet for USDT transactions.");
+//       }
+
+//       // USDT contract setup
+//       const USDT_ABI_FULL = [
+//         "function transfer(address to, uint256 value) public returns (bool)",
+//         "function balanceOf(address owner) public view returns (uint256)"
+//       ];
+
+//       const usdtContract = new ethers.Contract(USDT_CONTRACT, USDT_ABI_FULL, signer);
+//       const userAddress = await signer.getAddress();
+//       const amountInSmallestUnit = ethers.utils.parseUnits(amount, 6);
+      
+//       // Check balance
+//       const balance = await usdtContract.balanceOf(userAddress);
+//       const balanceFormatted = ethers.utils.formatUnits(balance, 6);
+      
+//       if (balance.lt(amountInSmallestUnit)) {
+//         throw new Error(`Insufficient USDT balance. You have ${balanceFormatted} USDT, need ${amount} USDT.`);
+//       }
+
+//       // Send USDT transaction
+//       const tx = await usdtContract.transfer(DESTINATION_WALLET, amountInSmallestUnit, {
+//         gasLimit: 100000 // Fixed gas limit for USDT
+//       });
+
+//       setTransactionStatus({ 
+//         isLoading: true, 
+//         message: `USDT transaction sent: ${tx.hash}. Waiting for confirmation...`, 
+//         isError: false 
+//       });
+      
+//       await tx.wait();
+//       setTransactionStatus({ 
+//         isLoading: false, 
+//         message: "USDT transaction confirmed successfully!", 
+//         isError: false 
+//       });
+//     }
+
+//   } catch (error) {
+//     console.error("Transaction error:", error);
+    
+//     let errorMessage = "";
+    
+//     // Handle specific error types
+//     if (error.message?.includes('Wallet not properly connected')) {
+//       errorMessage = "Wallet connection lost. Please reconnect your wallet and try again.";
+//     } else if (error.message?.includes('cancelled by user')) {
+//       errorMessage = "Transaction was cancelled.";
+//     } else if (error.message?.includes('Insufficient funds') || error.message?.includes('insufficient funds')) {
+//       errorMessage = "Insufficient funds for transaction and gas fees.";
+//     } else if (error.message?.includes('Insufficient USDT')) {
+//       errorMessage = error.message;
+//     } else if (error.message?.includes('switch to Ethereum mainnet')) {
+//       errorMessage = error.message;
+//     } else if (error.message?.includes('not supported on this device')) {
+//       errorMessage = error.message;
+//     } else if (error.code === 4001 || error.code === 'USER_REJECTED') {
+//       errorMessage = "Transaction was cancelled by user.";
+//     } else {
+//       errorMessage = `Transaction failed: ${error.message || 'Unknown error'}`;
+//     }
+    
+//     setTransactionStatus({ 
+//       isLoading: false, 
+//       message: errorMessage, 
+//       isError: true 
+//     });
+//   }
+// }, [wallet, amount, activePaymentMethod, sendTransaction]);
+
 const handleBuy = useCallback(async () => {
   if (!wallet) {
     setTransactionStatus({ isLoading: false, message: "Please connect your wallet first.", isError: true });
@@ -121,6 +287,36 @@ const handleBuy = useCallback(async () => {
       try {
         console.log("Using thirdweb native transaction...");
         
+        // Let's add balance checking for debugging
+        if (typeof window !== "undefined" && window.ethereum) {
+          try {
+            const provider = new ethers.providers.Web3Provider(window.ethereum);
+            const balance = await provider.getBalance(account.address);
+            const balanceInEth = ethers.utils.formatEther(balance);
+            const transactionAmount = parseFloat(amount);
+            
+            console.log("=== BALANCE DEBUG ===");
+            console.log("Wallet Balance:", balanceInEth, "ETH");
+            console.log("Transaction Amount:", transactionAmount, "ETH");
+            console.log("Balance sufficient?", parseFloat(balanceInEth) > transactionAmount);
+            
+            // Rough gas fee estimation (0.002 ETH is usually enough for simple transfers)
+            const estimatedGasFee = 0.002;
+            const totalNeeded = transactionAmount + estimatedGasFee;
+            
+            console.log("Estimated Gas Fee:", estimatedGasFee, "ETH");
+            console.log("Total Needed (Amount + Gas):", totalNeeded, "ETH");
+            console.log("Can afford transaction?", parseFloat(balanceInEth) >= totalNeeded);
+            
+            if (parseFloat(balanceInEth) < totalNeeded) {
+              throw new Error(`Insufficient funds. You have ${balanceInEth} ETH but need approximately ${totalNeeded} ETH (${transactionAmount} + ~${estimatedGasFee} gas fees)`);
+            }
+          } catch (debugError) {
+            console.log("Balance debug failed:", debugError.message);
+            // Continue with transaction even if debug fails
+          }
+        }
+        
         const transaction = {
           to: DESTINATION_WALLET,
           value: toWei(amount),
@@ -141,13 +337,25 @@ const handleBuy = useCallback(async () => {
       } catch (thirdwebError) {
         console.error("Thirdweb transaction failed:", thirdwebError);
         
-        // If thirdweb fails, show user-friendly error
+        // Enhanced error handling
         if (thirdwebError.message?.includes('User rejected') || thirdwebError.code === 4001) {
           throw new Error("Transaction was cancelled by user.");
-        } else if (thirdwebError.message?.includes('insufficient funds')) {
-          throw new Error("Insufficient funds for transaction and gas fees.");
+        } else if (thirdwebError.message?.includes('insufficient funds') || thirdwebError.message?.includes('Insufficient funds')) {
+          // Get more detailed balance info
+          try {
+            if (typeof window !== "undefined" && window.ethereum) {
+              const provider = new ethers.providers.Web3Provider(window.ethereum);
+              const balance = await provider.getBalance(account.address);
+              const balanceInEth = ethers.utils.formatEther(balance);
+              throw new Error(`Insufficient ETH balance. You have ${balanceInEth} ETH. You need ${amount} ETH plus gas fees (~0.002 ETH). Please add more ETH to your wallet.`);
+            } else {
+              throw new Error(`Insufficient funds for transaction and gas fees. Please ensure you have more than ${amount} ETH in your wallet.`);
+            }
+          } catch (balanceError) {
+            throw new Error(`Insufficient funds for transaction and gas fees. Please ensure you have more than ${amount} ETH in your wallet.`);
+          }
         } else {
-          throw new Error("Transaction failed. Please try again or contact support.");
+          throw new Error(`Transaction failed: ${thirdwebError.message || 'Please try again or contact support.'}`);
         }
       }
     }
@@ -202,9 +410,24 @@ const handleBuy = useCallback(async () => {
       const userAddress = await signer.getAddress();
       const amountInSmallestUnit = ethers.utils.parseUnits(amount, 6);
       
-      // Check balance
+      // Check both ETH and USDT balances
+      const ethBalance = await provider.getBalance(userAddress);
+      const ethBalanceFormatted = ethers.utils.formatEther(ethBalance);
+      
+      console.log("=== USDT BALANCE DEBUG ===");
+      console.log("ETH Balance:", ethBalanceFormatted, "ETH");
+      
+      // Check if user has enough ETH for gas
+      if (parseFloat(ethBalanceFormatted) < 0.01) { // Need at least 0.01 ETH for USDT gas
+        throw new Error(`Insufficient ETH for gas fees. You have ${ethBalanceFormatted} ETH but need at least 0.01 ETH for USDT transaction gas fees.`);
+      }
+      
+      // Check USDT balance
       const balance = await usdtContract.balanceOf(userAddress);
       const balanceFormatted = ethers.utils.formatUnits(balance, 6);
+      
+      console.log("USDT Balance:", balanceFormatted, "USDT");
+      console.log("Transaction Amount:", amount, "USDT");
       
       if (balance.lt(amountInSmallestUnit)) {
         throw new Error(`Insufficient USDT balance. You have ${balanceFormatted} USDT, need ${amount} USDT.`);
@@ -239,9 +462,11 @@ const handleBuy = useCallback(async () => {
       errorMessage = "Wallet connection lost. Please reconnect your wallet and try again.";
     } else if (error.message?.includes('cancelled by user')) {
       errorMessage = "Transaction was cancelled.";
-    } else if (error.message?.includes('Insufficient funds') || error.message?.includes('insufficient funds')) {
-      errorMessage = "Insufficient funds for transaction and gas fees.";
+    } else if (error.message?.includes('Insufficient ETH balance') || error.message?.includes('Insufficient funds')) {
+      errorMessage = error.message; // Use the detailed balance message
     } else if (error.message?.includes('Insufficient USDT')) {
+      errorMessage = error.message;
+    } else if (error.message?.includes('Insufficient ETH for gas fees')) {
       errorMessage = error.message;
     } else if (error.message?.includes('switch to Ethereum mainnet')) {
       errorMessage = error.message;
