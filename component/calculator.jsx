@@ -1,5 +1,7 @@
 'use client';
 import React, { useState, useRef, useEffect } from 'react';
+import { useSheetData } from '../hooks/useSheetData';
+import { parseSheetData } from '../utils/sheetParser';
 
 const Calculator = () => {
   const [activeTab, setActiveTab] = useState('coin');
@@ -7,26 +9,81 @@ const Calculator = () => {
   const [usdAmount, setUsdAmount] = useState('0.00');
   const [sliderValue, setSliderValue] = useState(64);
   const [stage, setStage] = useState(29);
-  const [price, setPrice] = useState('0.0276');
+  // Get price from sheet
+  const [storedWallet, setStoredWallet] = useState(null);
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setStoredWallet(localStorage.getItem("walletAddress"));
+    }
+  }, []);
+  const { data: sheetData } = useSheetData(storedWallet);
+  const { profile } = parseSheetData(sheetData);
+  const price = profile && profile["1 Bdag"] ? String(profile["1 Bdag"]) : '0.0276';
   const [dragging, setDragging] = useState(false);
 
   const barRef = useRef(null);
 
-  // Update stage and price based on slider value
+  // Update stage based on slider value
   useEffect(() => {
     setStage(Math.floor(sliderValue / 3.5));
-    setPrice((0.01 + (sliderValue * 0.0005)).toFixed(4));
   }, [sliderValue]);
 
+  // Conversion: BDAG to USD
   const handleBdagChange = (e) => {
-    setBdagAmount(e.target.value);
-    // Add conversion logic here if needed
+    const val = e.target.value;
+    setBdagAmount(val);
+    // If input is empty, clear USD too
+    if (val === "") {
+      setUsdAmount("");
+      return;
+    }
+    const num = parseFloat(val);
+    const priceNum = parseFloat(price);
+    if (!isNaN(num) && num >= 0 && !isNaN(priceNum)) {
+      setUsdAmount((num * priceNum).toFixed(2));
+    } else {
+      setUsdAmount("");
+    }
   };
 
+  // Conversion: USD to BDAG
   const handleUsdChange = (e) => {
-    setUsdAmount(e.target.value);
-    // Add conversion logic here if needed
+    const val = e.target.value;
+    setUsdAmount(val);
+    // If input is empty, clear BDAG too
+    if (val === "") {
+      setBdagAmount("");
+      return;
+    }
+    const num = parseFloat(val);
+    const priceNum = parseFloat(price);
+    if (!isNaN(num) && num >= 0 && priceNum > 0) {
+      setBdagAmount((num / priceNum).toFixed(4));
+    } else {
+      setBdagAmount("");
+    }
   };
+
+  // Keep conversion in sync when price changes
+  useEffect(() => {
+    const priceNum = parseFloat(price);
+    // If BDAG is set, update USD
+    const bdagNum = parseFloat(bdagAmount);
+    if (bdagAmount !== "" && !isNaN(bdagNum) && bdagNum >= 0 && !isNaN(priceNum)) {
+      setUsdAmount((bdagNum * priceNum).toFixed(2));
+    } else if (usdAmount !== "") {
+      // If only USD is set, update BDAG
+      const usdNum = parseFloat(usdAmount);
+      if (!isNaN(usdNum) && usdNum >= 0 && priceNum > 0) {
+        setBdagAmount((usdNum / priceNum).toFixed(4));
+      } else {
+        setBdagAmount("");
+      }
+    } else {
+      setUsdAmount("");
+      setBdagAmount("");
+    }
+  }, [price]);
 
   // Drag logic for custom slider
   const startDrag = (e) => {
@@ -111,16 +168,16 @@ const Calculator = () => {
             <div className="style_formGroup__8kJRT">
               <label>USD Amount</label>
               <div className="style_formController__kBuhk">
-                <p>$</p>
+                <p >$</p>
                 <div className="style_input__d5JsO">
                   <div className="style_controller__nvybk">
                     <input
                       value={usdAmount}
                       onChange={handleUsdChange}
-                      readOnly // Remove this if you want it to be editable
                     />
                   </div>
                 </div>
+              <div style={{marginTop: '6px', fontSize: '13px', color: '#888'}}>1 $ = {parseFloat(price) > 0 ? (1/parseFloat(price)).toFixed(4) : '0.0000'} BDAG (Sheet Price)</div>
               </div>
             </div>
           </div>
@@ -130,46 +187,50 @@ const Calculator = () => {
               Move the slider to see how much your <b>BDAG</b> will be worth at different price targets!
             </p>
             <div
-  className="style_bar__V59_K"
-  ref={barRef}
-  style={{ position: "relative" , marginTop: "20px" }}
-  onMouseDown={e => startDrag(e)}
-  onTouchStart={e => startDrag(e)}
->
-  <div
-    className="style_progress__cgEf3"
-    style={{ width: `${sliderValue}%` }}
-  ></div>
-  <div
-    className="style_thumb__HR41y"
-    tabIndex={-1}
-    style={{
-      position: "absolute",
-      left: `calc(${sliderValue}% - 16px)`,
-      top: 0,
-      zIndex: 2,
-      cursor: "pointer"
-    }}
-    onMouseDown={startDrag}
-    onTouchStart={startDrag}
-  ></div>
-  <span
-    className="style_percent__6raBl"
-    style={{
-      position: "absolute",
-      left: `calc(${sliderValue}% - 16px)`,
-      top: "-28px", // adjust as needed
-      zIndex: 3,
-      whiteSpace: "nowrap"
-    }}
-  >
-    {sliderValue}%
-  </span>
-  <div
-    className="style_remaining__drxK_"
-    style={{ width: `${100 - sliderValue}%` }}
-  ></div>
-</div>
+              className="style_bar__V59_K"
+              ref={barRef}
+              style={{ position: "relative" , marginTop: "20px" }}
+              onMouseDown={e => startDrag(e)}
+              onTouchStart={e => startDrag(e)}
+            >
+              <div
+                className="style_progress__cgEf3"
+                style={{ width: `${sliderValue}%` }}
+              ></div>
+              <div
+                className="style_thumb__HR41y"
+                tabIndex={-1}
+                style={{
+                  position: "absolute",
+                  left: `calc(${sliderValue}% - 16px)`,
+                  top: 0,
+                  zIndex: 2,
+                  cursor: "pointer"
+                }}
+                onMouseDown={startDrag}
+                onTouchStart={startDrag}
+              ></div>
+              <span
+                className="style_percent__6raBl"
+                style={{
+                  position: "absolute",
+                  left: `calc(${sliderValue}% - 16px)`,
+                  top: "-28px", // adjust as needed
+                  zIndex: 3,
+                  whiteSpace: "nowrap"
+                }}
+              >
+                {sliderValue}%
+              </span>
+              <div
+                className="style_remaining__drxK_"
+                style={{ width: `${100 - sliderValue}%` }}
+              ></div>
+            </div>
+            {/* Show slider-based price below the slider */}
+            <div style={{marginTop: '10px', fontSize: '13px', color: '#888'}}>
+              1 BDAG = ${(0.01 + (sliderValue * 0.0005)).toFixed(4)}
+            </div>
           </div>
 
           <div className="style_selected__TZOjj">
