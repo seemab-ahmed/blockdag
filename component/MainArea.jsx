@@ -96,11 +96,10 @@ useEffect(() => {
 
 
 const handleBuy = useCallback(async () => {
-    if (!wallet) {
+  if (!wallet) {
     setTransactionStatus({ isLoading: false, message: "Please connect your wallet first.", isError: true });
     return;
   }
-
   if (!amount || parseFloat(amount) <= 0) {
     setTransactionStatus({ isLoading: false, message: "Please enter a valid amount.", isError: true });
     return;
@@ -109,29 +108,51 @@ const handleBuy = useCallback(async () => {
   setTransactionStatus({ isLoading: true, message: `Preparing ${amount} ${activePaymentMethod} transaction...`, isError: false });
 
   try {
-    // Explicitly request account access (triggers mobile wallet prompts)
-    if (typeof window !== "undefined" && window.ethereum?.request) {
-      await window.ethereum.request({ method: 'eth_requestAccounts' });
+    // Get account first
+    const account = await wallet.getAccount();
+    if (!account?.address) {
+      throw new Error("Wallet not properly connected. Please reconnect.");
     }
 
-    // For ETH/BNB
+    console.log("Connected wallet address:", account.address);
+
+    // For ETH/BNB, prioritize thirdweb's native method (works best on mobile)
     if (activePaymentMethod === "ETH" || activePaymentMethod === "BNB") {
-      const transaction = {
-        to: DESTINATION_WALLET,
-        value: toWei(amount),
-      };
+      try {
+        console.log("Using thirdweb native transaction...");
+        
+        const transaction = {
+          to: DESTINATION_WALLET,
+          value: toWei(amount),
+        };
+        
+        console.log("Transaction object:", transaction);
+        
+        const result = await sendTransaction(transaction);
+        console.log("Transaction result:", result);
+        
+        setTransactionStatus({ 
+          isLoading: false, 
+          message: "Transaction sent successfully! Check your wallet for confirmation.", 
+          isError: false 
+        });
+        return;
 
-      const result = await sendTransaction(transaction);
-      console.log("Transaction hash:", result.hash);
-
-      setTransactionStatus({
-        isLoading: false,
-        message: "Transaction sent! Check your wallet for confirmation.",
-        isError: false,
-      });
-      return;
+      } catch (thirdwebError) {
+        console.error("Thirdweb transaction failed:", thirdwebError);
+        
+        // If thirdweb fails, show user-friendly error
+        if (thirdwebError.message?.includes('User rejected') || thirdwebError.code === 4001) {
+          throw new Error("Transaction was cancelled by user.");
+        } else if (thirdwebError.message?.includes('insufficient funds')) {
+          throw new Error("Insufficient funds for transaction and gas fees.");
+        } else {
+          throw new Error("Transaction failed. Please try again or contact support.");
+        }
+      }
     }
 
+ 
     // For USDT, we need to fall back to ethers (but with better mobile support)
     if (activePaymentMethod === "USDT") {
       console.log("USDT transaction - attempting ethers fallback...");
