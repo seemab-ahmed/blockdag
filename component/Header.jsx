@@ -1,4 +1,5 @@
 "use client";
+import { useRef } from "react";
 import React, { useState, useEffect } from "react";
 import { useActiveWallet, useActiveWalletConnectionStatus } from "thirdweb/react";
 import { useRouter } from "next/navigation";
@@ -6,6 +7,7 @@ import { useRouter } from "next/navigation";
 export const Header = () => {
   const wallet = useActiveWallet();
   const router = useRouter();
+  const logoutTimer = useRef(null);
   const connectionStatus = useActiveWalletConnectionStatus();
   useEffect(() => {
     if (connectionStatus === "connected" && wallet) {
