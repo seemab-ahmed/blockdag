@@ -125,8 +125,8 @@
 //       {isChecking && (
 //         <div
 //           style={{
-            // sessionStorage.setItem("blockVerify", "true");
-            // window.location.reload();
+// sessionStorage.setItem("blockVerify", "true");
+// window.location.reload();
 //             left: 0,
 //             width: '100vw',
 //             height: '100vh',
@@ -177,7 +177,6 @@
 //         </div>
 //       )}
 
-
 //       {popup.show && (
 //         <Popup
 //           title="Success"
@@ -196,8 +195,8 @@
 
 //       {error && (
 //         <p className="mt-4 text-red-500 max-w-[300px] text-center">
-//           {error.includes("500") 
-//             ? "Server error. Please try again later." 
+//           {error.includes("500")
+//             ? "Server error. Please try again later."
 //             : error}
 //         </p>
 //       )}
@@ -205,10 +204,12 @@
 //   );
 // }
 
+"use client";
 
-'use client';
-
-import { useActiveWallet, useActiveWalletConnectionStatus } from "thirdweb/react";
+import {
+  useActiveWallet,
+  useActiveWalletConnectionStatus,
+} from "thirdweb/react";
 import { createThirdwebClient } from "thirdweb";
 import { ConnectButton } from "thirdweb/react";
 import { walletConnect, createWallet } from "thirdweb/wallets";
@@ -217,7 +218,7 @@ import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Popup from "./Popup";
 
-const client = createThirdwebClient({
+export const client = createThirdwebClient({
   clientId: "39b118976e9e817bc3799d54ddf74337",
 });
 
@@ -266,18 +267,28 @@ export default function ConnectOnly() {
       const response = await fetch(`/api/check-sheet?wallet=${walletAddress}`);
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(
-          errorData.message);
+        throw new Error(errorData.message);
       }
       const result = await response.json();
       if (result.exists) {
         localStorage.setItem("walletAddress", walletAddress);
-        setPopup({ show: true, message: "Wallet verified! Redirecting...", type: "success" });
+        setPopup({
+          show: true,
+          message: "Wallet verified! Redirecting...",
+          type: "success",
+        });
         router.push("/dashboard");
-        setTimeout(() => setPopup({ show: false, message: "", type: "" }), 5000);
+        setTimeout(
+          () => setPopup({ show: false, message: "", type: "" }),
+          5000
+        );
       } else {
         localStorage.removeItem("walletAddress");
-        setPopup({ show: true, message: "Access restricted: Wallet not recognized. Disconnecting...", type: "error" });
+        setPopup({
+          show: true,
+          message: "Access restricted: Wallet not recognized. Disconnecting...",
+          type: "error",
+        });
         if (wallet) wallet.disconnect();
         setTimeout(() => {
           setPopup({ show: false, message: "", type: "" });
@@ -288,7 +299,12 @@ export default function ConnectOnly() {
       }
     } catch (err) {
       console.error("Verification failed:", err);
-      setPopup({ show: true, message: err.message || "Failed to verify wallet. Please try again later.", type: "error" });
+      setPopup({
+        show: true,
+        message:
+          err.message || "Failed to verify wallet. Please try again later.",
+        type: "error",
+      });
       setTimeout(() => setPopup({ show: false, message: "", type: "" }), 2000);
     } finally {
       setIsChecking(false);
@@ -297,16 +313,19 @@ export default function ConnectOnly() {
 
   useEffect(() => {
     if (walletAddress) {
-    if (typeof window !== "undefined" && sessionStorage.getItem("blockVerify") === "true") {
-      // Skip verification after reload due to access restriction
-      sessionStorage.removeItem("blockVerify");
-      return;
+      if (
+        typeof window !== "undefined" &&
+        sessionStorage.getItem("blockVerify") === "true"
+      ) {
+        // Skip verification after reload due to access restriction
+        sessionStorage.removeItem("blockVerify");
+        return;
+      }
+      if (walletAddress) {
+        verifyWallet();
+      }
     }
-    if (walletAddress) {
-      verifyWallet();
-    }
-  }
-}, [walletAddress, verifyWallet]);
+  }, [walletAddress, verifyWallet]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -335,11 +354,13 @@ export default function ConnectOnly() {
             backgroundColor: "#2563eb",
             color: "white",
             fontWeight: "600",
-          }
+          },
         }}
       />
-{isChecking && <div> {/* Loader code unchanged */} </div>}
-      {popup.show && <Popup title="Success" message={popup.message} type={popup.type} />}
+      {isChecking && <div> {/* Loader code unchanged */} </div>}
+      {popup.show && (
+        <Popup title="Success" message={popup.message} type={popup.type} />
+      )}
       {error && <Popup title="Error" message={error} type="error" />}
     </div>
   );
