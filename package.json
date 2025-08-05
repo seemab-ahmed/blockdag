@@ -23,7 +23,8 @@
     "react-dom": "^19.0.0",
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.7.0",
-    "thirdweb": "^5.105.25"
+    "thirdweb": "^5.105.25",
+    "yarn": "^1.22.22"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

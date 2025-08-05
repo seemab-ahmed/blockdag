@@ -7,7 +7,7 @@ export function Providers({ children }) {
   return (
     <ThirdwebProvider
       activeChain="sepolia"
-      supportedChains={["ethereum", "polygon", "binance", "arbitrum"]}
+      supportedChains={["ethereum", "polygon", "binance", "arbitrum", "bscscan"]}
       clientId={process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID}
     >
     <QueryClientProvider client={queryClient}>

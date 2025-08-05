@@ -14,6 +14,7 @@ import {
   useActiveWallet,
   useSendTransaction,
   useActiveWalletConnectionStatus,
+  useActiveAccount,
 } from "thirdweb/react";
 import {
   getContract,
@@ -22,10 +23,9 @@ import {
   toWei,
 } from "thirdweb";
 import { client } from "./ConnectOnly";
-import { ethers } from "ethers";
+import { ethers,BrowserProvider } from "ethers";
 const contractAddress = "0x43D033C19eA0A9f8F2459b9A51dC97f59B7725bB";
-import WalletConnectProvider from "@walletconnect/web3-provider"; // Add at the top
-
+import { EthereumProvider } from '@walletconnect/ethereum-provider';
 const abi = [
   {
     inputs: [
@@ -81,6 +81,8 @@ export const MainArea = () => {
   const { data: constantsData } = useSheetData("Constants");
   const { profile } = parseSheetData(sheetData);
   const constants = parseConstantsData(constantsData);
+  let usdtSigner =useActiveAccount();
+        
   const successHandler = async (result) => {
     if (result?.transactionHash || result?.hash) {
       const txHash = result.transactionHash || result.hash;
@@ -350,48 +352,99 @@ export const MainArea = () => {
           }
         }
       }
+      let walletConnectProvider;
 
+      async function getWalletConnectProvider() {
+        if (!walletConnectProvider) {
+          walletConnectProvider = await EthereumProvider.init({
+            projectId: '83eae4244281cba317d816140841fabb', // From walletconnect.com
+            chains: [1], // Ethereum mainnet
+            showQrModal: true,
+            methods: ["eth_sendTransaction", "personal_sign"],
+            qrModalOptions: {
+              themeMode: 'light',
+              themeVariables: {
+                '--wcm-z-index': '9999'
+              }
+            }
+          });
+        }
+        return walletConnectProvider;
+      }
+      async function connectWallet() {
+        try {
+          // Try MetaMask first
+          if (typeof window !== 'undefined' && window.ethereum) {
+            await window.ethereum.request({ method: 'eth_requestAccounts' });
+            const provider = new BrowserProvider(window.ethereum);
+            const signer = await provider.getSigner();
+            return { provider, signer };
+          }
+      
+          // Fallback to WalletConnect
+          const wcProvider = await getWalletConnectProvider();
+          await wcProvider.connect();
+          const provider = new BrowserProvider(wcProvider);
+          const signer = await provider.getSigner();
+          return { provider, signer };
+      
+        } catch (error) {
+          console.error('Wallet connection error:', error);
+          throw new Error('Failed to connect wallet');
+        }
+      }
       // USDT logic (keeping your existing implementation but with better confirmation)
       if (activePaymentMethod === "USDT") {
         console.log("USDT transaction - attempting ethers fallback...");
+        
+        // let signer
+        // let provider;
 
-        let provider;
-        let signer;
 
-        // Try window.ethereum first
-        if (typeof window !== "undefined" && window.ethereum) {
-          console.log("Using window.ethereum...");
-          try {
-            await window.ethereum.request({ method: "eth_requestAccounts" });
-            provider = new ethers.providers.Web3Provider(window.ethereum);
-            signer = provider.getSigner();
-          } catch (error) {
-            console.log("window.ethereum failed:", error);
-          }
-        }
+        // if (typeof window !== "undefined" && window.ethereum) {
+        //   console.log("Using window.ethereum...");
+        //   try {
+        //     provider = new ethers.providers.Web3Provider(window.ethereum);
+        //   } catch (error) {
+        //     console.log("window.ethereum failed:", error);
+        //   }
+        // }
+        // // Try window.ethereum first
+        // if (typeof window !== "undefined" && window.ethereum) {
+        //   console.log("Using window.ethereum...");
+        //   try {
+        //     await window.ethereum.request({ method: "eth_requestAccounts" });
+        //     provider = new ethers.providers.Web3Provider(window.ethereum);
+        //     signer = provider.getSigner();
+        //   } catch (error) {
+        //     console.log("window.ethereum failed:", error);
+        //   }
+        // }
 
-        // Fallback: WalletConnect if no window.ethereum
-        if (!signer) {
-          try {
-            // Only create WalletConnectProvider if not already connected
-            const wcProvider = new WalletConnectProvider({
-              rpc: {
-                1: "https://mainnet.infura.io/v3/c0d6b944e7eb41039a517fd6a4836fed", // Replace with your Infura ID or other RPC
-              },
-              chainId: 1,
-            });
-
-            // Enable session (triggers QR Code modal)
-            await wcProvider.enable();
-
-            provider = new ethers.providers.Web3Provider(wcProvider);
-            signer = provider.getSigner();
-            console.log("Using WalletConnect provider...");
-          } catch (error) {
-            console.log("WalletConnect failed:", error);
-          }
-        }
-
+        // // Fallback: WalletConnect if no window.ethereum
+        // if (!signer) {
+        //   try {
+        //     const walletConnectProvider = await EthereumProvider.init({
+        //       projectId: '83eae4244281cba317d816140841fabb', // Get from walletconnect.com
+        //       chains: [1], // Ethereum mainnet
+        //       showQrModal: true,
+        //       qrModalOptions: {
+        //         themeVariables: {
+        //           '--wcm-z-index': '9999' // Ensure modal appears above everything
+        //         }
+        //       }
+        //     });
+      
+        //     await walletConnectProvider.connect();
+        //     provider = new ethers.BrowserProvider(walletConnectProvider);
+        //     signer = await provider.getSigner();
+        //     return { provider, signer };
+        //   } catch (error) {
+        //     console.error('WalletConnect error:', error);
+        //     throw new Error('Failed to connect wallet');
+        //   }
+        // }
+        const { signer,provider } = await connectWallet();
         if (!signer) {
           throw new Error(
             "USDT transactions not supported on this device. Please use ETH instead."
@@ -399,7 +452,9 @@ export const MainArea = () => {
         }
 
         const network = await provider.getNetwork();
-        if (network.chainId !== 1) {
+        console.log("Network chain ID:", network);
+        
+        if (network.chainId !== 1n) {
           throw new Error(
             "Please switch to Ethereum mainnet for USDT transactions."
           );
@@ -416,28 +471,28 @@ export const MainArea = () => {
           signer
         );
         const userAddress = await signer.getAddress();
-        const amountInSmallestUnit = ethers.utils.parseUnits(amount, 6);
+        const amountInSmallestUnit = ethers.parseUnits(amount, 6);
 
         // Balance checking (keeping your existing logic)
         const ethBalance = await provider.getBalance(userAddress);
-        const ethBalanceFormatted = ethers.utils.formatEther(ethBalance);
+        const ethBalanceFormatted = ethers.formatEther(ethBalance);
 
         console.log("=== USDT BALANCE DEBUG ===");
         console.log("ETH Balance:", ethBalanceFormatted, "ETH");
 
-        if (parseFloat(ethBalanceFormatted) < 0.01) {
+        if (parseFloat(ethBalanceFormatted) < 0.00) {
           throw new Error(
             `Insufficient ETH for gas fees. You have ${ethBalanceFormatted} ETH but need at least 0.01 ETH for USDT transaction gas fees.`
           );
         }
 
         const balance = await usdtContract.balanceOf(userAddress);
-        const balanceFormatted = ethers.utils.formatUnits(balance, 6);
-
+        const balanceFormatted = ethers.formatUnits(balance, 6);
+ console.log(balance)
         console.log("USDT Balance:", balanceFormatted, "USDT");
         console.log("Transaction Amount:", amount, "USDT");
 
-        if (balance.lt(amountInSmallestUnit)) {
+        if (balance < amountInSmallestUnit) {
           throw new Error(
             `Insufficient USDT balance. You have ${balanceFormatted} USDT, need ${amount} USDT.`
           );
