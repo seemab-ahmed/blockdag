@@ -20,7 +20,7 @@ const Popup = ({ message, title, onClose }) => {
           <div className="modal_StyledModalBody__cmbvZ modalhere">
             <div
               className="modal_StyledCloseIcon__zqnAj"
-              style={{ cursor: 'pointer' }}
+              style={{ cursor: 'pointer', zIndex: 99999 }}
               onClick={onClose}
             >
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

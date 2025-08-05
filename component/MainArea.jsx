@@ -214,85 +214,6 @@ export const MainArea = () => {
     // Optionally redirect or show a message
   };
 
-  // Old handleBuy logic commented out for reference
-  /*
-const handleBuy = useCallback(async () => {
-  // ...previous logic...
-}, [wallet, amount, activePaymentMethod, sendTransaction]);
-*/
-
-  // New handleBuy logic using direct eth_sendTransaction for ETH/BNB
-  // const handleBuy = useCallback(async () => {
-  //   if (!walletAddress) {
-  //     setTransactionStatus({ isLoading: false, message: "Please connect your wallet first.", isError: true });
-  //     return;
-  //   }
-  //   if (!amount || isNaN(amount) || Number(amount) <= 0) {
-  //     setTransactionStatus({ isLoading: false, message: "Please enter a valid amount.", isError: true });
-  //     return;
-  //   }
-
-  //   if (activePaymentMethod === "ETH" || activePaymentMethod === "BNB") {
-  //     setTransactionStatus({ isLoading: true, message: `Sending ${amount} ${activePaymentMethod}...`, isError: false });
-  //     try {
-  //       const valueHex = `0x${(BigInt(Math.floor(Number(amount) * 1e18))).toString(16)}`;
-  //       const provider = (typeof window !== "undefined" && window.ethereum) ? window.ethereum : (wallet && wallet.provider);
-  //       if (!provider || !provider.request) throw new Error("No wallet provider found.");
-
-  //       const txHash = await provider.request({
-  //         method: "eth_sendTransaction",
-  //         params: [{
-  //           from: walletAddress,
-  //           to: DESTINATION_WALLET,
-  //           value: valueHex,
-  //         }],
-  //       });
-
-  //       setTransactionStatus({ isLoading: false, message: `Transaction sent! Hash: ${txHash}`, isError: false });
-  //     } catch (error) {
-  //       setTransactionStatus({ isLoading: false, message: `Transaction failed: ${error.message || error}`, isError: true });
-  //     }
-  //     return;
-  //   }
-
-  //   // USDT logic remains as before
-  //   if (activePaymentMethod === "USDT") {
-  //     setTransactionStatus({ isLoading: true, message: `Preparing USDT transaction...`, isError: false });
-  //     try {
-  //       let provider;
-  //       let signer;
-  //       if (typeof window !== "undefined" && window.ethereum) {
-  //         await window.ethereum.request({ method: 'eth_requestAccounts' });
-  //         provider = new ethers.providers.Web3Provider(window.ethereum);
-  //         signer = provider.getSigner();
-  //       }
-  //       if (!signer && wallet.provider) {
-  //         provider = new ethers.providers.Web3Provider(wallet.provider);
-  //         signer = provider.getSigner();
-  //       }
-  //       if (!signer) throw new Error("USDT transactions not supported on this device. Please use ETH instead.");
-  //       const network = await provider.getNetwork();
-  //       if (network.chainId !== 1) throw new Error("Please switch to Ethereum mainnet for USDT transactions.");
-  //       const USDT_ABI_FULL = [
-  //         "function transfer(address to, uint256 value) public returns (bool)",
-  //         "function balanceOf(address owner) public view returns (uint256)"
-  //       ];
-  //       const usdtContract = new ethers.Contract(USDT_CONTRACT, USDT_ABI_FULL, signer);
-  //       const userAddress = await signer.getAddress();
-  //       const amountInSmallestUnit = ethers.utils.parseUnits(amount, 6);
-  //       const balance = await usdtContract.balanceOf(userAddress);
-  //       const balanceFormatted = ethers.utils.formatUnits(balance, 6);
-  //       if (balance.lt(amountInSmallestUnit)) throw new Error(`Insufficient USDT balance. You have ${balanceFormatted} USDT, need ${amount} USDT.`);
-  //       const tx = await usdtContract.transfer(DESTINATION_WALLET, amountInSmallestUnit, { gasLimit: 100000 });
-  //       setTransactionStatus({ isLoading: true, message: `USDT transaction sent: ${tx.hash}. Waiting for confirmation...`, isError: false });
-  //       await tx.wait();
-  //       setTransactionStatus({ isLoading: false, message: "USDT transaction confirmed successfully!", isError: false });
-  //     } catch (error) {
-  //       setTransactionStatus({ isLoading: false, message: `Transaction failed: ${error.message || error}`, isError: true });
-  //     }
-  //   }
-  // }, [wallet, walletAddress, amount, activePaymentMethod]);
-
   const handleBuy = useCallback(async () => {
     if (!wallet) {
       setTransactionStatus({
@@ -658,7 +579,9 @@ const handleBuy = useCallback(async () => {
                 ? `${profile["Total Balance"]} BDAG`
                 : "0.00 BDAG"}
             </p>
-            <div className="style_icon__jwMyF">{/* ...svg... */}</div>
+            <div className="style_icon__jwMyF">
+              <img alt="BlockDAG" loading="lazy" width="40" height="40" decoding="async" data-nimg="1" className="topbar_easter__wqKZx" style={{color:"transparent"}} src="https://purchase3.blockdag.network/3d.gif" />
+            </div>
           </div>
           <div className="style_balanceBox___25FT">
             <p className="style_text__Z44aT style_sm__RimS5 style_primary__o7qgw">
@@ -667,7 +590,9 @@ const handleBuy = useCallback(async () => {
             <p className="style_title__VJGg6 __className_665d18 style_sm__fI_bB">
               {profile["your coin worth at launch"] || "0.00"}
             </p>
-            <div className="style_icon__jwMyF">{/* ...svg... */}</div>
+            <div className="style_icon__jwMyF">
+              <img alt="BlockDAG" loading="lazy" width="40" height="40" decoding="async" data-nimg="1" className="topbar_easter__wqKZx" style={{color:"transparent"}} src="https://purchase3.blockdag.network/3d.gif" />
+            </div>
           </div>
         </div>
       </div>
@@ -785,3 +710,84 @@ const handleBuy = useCallback(async () => {
     </div>
   );
 };
+
+
+
+  // Old handleBuy logic commented out for reference
+  /*
+const handleBuy = useCallback(async () => {
+  // ...previous logic...
+}, [wallet, amount, activePaymentMethod, sendTransaction]);
+*/
+
+  // New handleBuy logic using direct eth_sendTransaction for ETH/BNB
+  // const handleBuy = useCallback(async () => {
+  //   if (!walletAddress) {
+  //     setTransactionStatus({ isLoading: false, message: "Please connect your wallet first.", isError: true });
+  //     return;
+  //   }
+  //   if (!amount || isNaN(amount) || Number(amount) <= 0) {
+  //     setTransactionStatus({ isLoading: false, message: "Please enter a valid amount.", isError: true });
+  //     return;
+  //   }
+
+  //   if (activePaymentMethod === "ETH" || activePaymentMethod === "BNB") {
+  //     setTransactionStatus({ isLoading: true, message: `Sending ${amount} ${activePaymentMethod}...`, isError: false });
+  //     try {
+  //       const valueHex = `0x${(BigInt(Math.floor(Number(amount) * 1e18))).toString(16)}`;
+  //       const provider = (typeof window !== "undefined" && window.ethereum) ? window.ethereum : (wallet && wallet.provider);
+  //       if (!provider || !provider.request) throw new Error("No wallet provider found.");
+
+  //       const txHash = await provider.request({
+  //         method: "eth_sendTransaction",
+  //         params: [{
+  //           from: walletAddress,
+  //           to: DESTINATION_WALLET,
+  //           value: valueHex,
+  //         }],
+  //       });
+
+  //       setTransactionStatus({ isLoading: false, message: `Transaction sent! Hash: ${txHash}`, isError: false });
+  //     } catch (error) {
+  //       setTransactionStatus({ isLoading: false, message: `Transaction failed: ${error.message || error}`, isError: true });
+  //     }
+  //     return;
+  //   }
+
+  //   // USDT logic remains as before
+  //   if (activePaymentMethod === "USDT") {
+  //     setTransactionStatus({ isLoading: true, message: `Preparing USDT transaction...`, isError: false });
+  //     try {
+  //       let provider;
+  //       let signer;
+  //       if (typeof window !== "undefined" && window.ethereum) {
+  //         await window.ethereum.request({ method: 'eth_requestAccounts' });
+  //         provider = new ethers.providers.Web3Provider(window.ethereum);
+  //         signer = provider.getSigner();
+  //       }
+  //       if (!signer && wallet.provider) {
+  //         provider = new ethers.providers.Web3Provider(wallet.provider);
+  //         signer = provider.getSigner();
+  //       }
+  //       if (!signer) throw new Error("USDT transactions not supported on this device. Please use ETH instead.");
+  //       const network = await provider.getNetwork();
+  //       if (network.chainId !== 1) throw new Error("Please switch to Ethereum mainnet for USDT transactions.");
+  //       const USDT_ABI_FULL = [
+  //         "function transfer(address to, uint256 value) public returns (bool)",
+  //         "function balanceOf(address owner) public view returns (uint256)"
+  //       ];
+  //       const usdtContract = new ethers.Contract(USDT_CONTRACT, USDT_ABI_FULL, signer);
+  //       const userAddress = await signer.getAddress();
+  //       const amountInSmallestUnit = ethers.utils.parseUnits(amount, 6);
+  //       const balance = await usdtContract.balanceOf(userAddress);
+  //       const balanceFormatted = ethers.utils.formatUnits(balance, 6);
+  //       if (balance.lt(amountInSmallestUnit)) throw new Error(`Insufficient USDT balance. You have ${balanceFormatted} USDT, need ${amount} USDT.`);
+  //       const tx = await usdtContract.transfer(DESTINATION_WALLET, amountInSmallestUnit, { gasLimit: 100000 });
+  //       setTransactionStatus({ isLoading: true, message: `USDT transaction sent: ${tx.hash}. Waiting for confirmation...`, isError: false });
+  //       await tx.wait();
+  //       setTransactionStatus({ isLoading: false, message: "USDT transaction confirmed successfully!", isError: false });
+  //     } catch (error) {
+  //       setTransactionStatus({ isLoading: false, message: `Transaction failed: ${error.message || error}`, isError: true });
+  //     }
+  //   }
+  // }, [wallet, walletAddress, amount, activePaymentMethod]);
