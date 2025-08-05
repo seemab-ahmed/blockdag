@@ -19,7 +19,7 @@ export const Header = () => {
         sessionStorage.setItem("justLoggedOut", "true");
         localStorage.removeItem("walletAddress");
         router.push("/");
-      }, 60 * 1000); // 15 minutes
+      },15 * 60 * 1000); // 15 minutes
     }
     return () => {
       if (logoutTimer.current) clearTimeout(logoutTimer.current);
