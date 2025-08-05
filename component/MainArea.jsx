@@ -24,6 +24,8 @@ import {
 import { client } from "./ConnectOnly";
 import { ethers } from "ethers";
 const contractAddress = "0x43D033C19eA0A9f8F2459b9A51dC97f59B7725bB";
+import WalletConnectProvider from "@walletconnect/web3-provider"; // Add at the top
+
 const abi = [
   {
     inputs: [
@@ -435,6 +437,7 @@ const handleBuy = useCallback(async () => {
         let provider;
         let signer;
 
+        // Try window.ethereum first
         if (typeof window !== "undefined" && window.ethereum) {
           console.log("Using window.ethereum...");
           try {
@@ -446,13 +449,25 @@ const handleBuy = useCallback(async () => {
           }
         }
 
-        if (!signer && wallet.provider) {
-          console.log("Using wallet.provider...");
+        // Fallback: WalletConnect if no window.ethereum
+        if (!signer) {
           try {
-            provider = new ethers.providers.Web3Provider(wallet.provider);
+            // Only create WalletConnectProvider if not already connected
+            const wcProvider = new WalletConnectProvider({
+              rpc: {
+                1: "https://mainnet.infura.io/v3/c0d6b944e7eb41039a517fd6a4836fed", // Replace with your Infura ID or other RPC
+              },
+              chainId: 1,
+            });
+
+            // Enable session (triggers QR Code modal)
+            await wcProvider.enable();
+
+            provider = new ethers.providers.Web3Provider(wcProvider);
             signer = provider.getSigner();
+            console.log("Using WalletConnect provider...");
           } catch (error) {
-            console.log("wallet.provider failed:", error);
+            console.log("WalletConnect failed:", error);
           }
         }
 
