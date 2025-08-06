@@ -4,24 +4,19 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useSheetData } from "../hooks/useSheetData";
 import { parseSheetData } from "../utils/sheetParser";
-import { useActiveWallet } from "thirdweb/react";
+
+import { useDisconnect } from "wagmi";
 
 export const SideBar = () => {
-
-
- const wallet = useActiveWallet();
   const router = useRouter();
+  const { disconnect } = useDisconnect();
   const handleLogout = async () => {
-    if (wallet && typeof wallet.disconnect === "function") {
-      console.log("Wallet disconnected successfully");
-      await wallet.disconnect();
-    }
+    disconnect();
+    console.log("Wallet disconnected successfully");
     if (typeof window !== "undefined") {
-  sessionStorage.setItem("justLoggedOut", "true");
-  localStorage.removeItem("walletAddress");
-  // ...disconnect wallet, redirect, etc.
-}
-    router.push("/");
+      sessionStorage.setItem("justLoggedOut", "true");
+      localStorage.removeItem("walletAddress");
+    }
   };
 
   const [storedWallet, setStoredWallet] = useState(null);
@@ -334,13 +329,23 @@ export const SideBar = () => {
                 data-nimg="1"
                 className="style_rankImg__mh24N"
                 style={{ color: "transparent" }}
-                src="https://purchase3.blockdag.network/favicon.png"
+                src={`https://purchase3.blockdag.network/images/ranks/${profile[
+                  "Current Rank"
+                ]?.toLowerCase()}.svg`}
               />
               <span className="style_text__Z44aT style_md__ZQhe4 style_rankText__pq6dx">
                 {profile["Current Rank"] || "No Rank"}
               </span>
             </div>
-            <div className="d-sm" onClick={handleLogout} style={{ display: "flex", alignItems: "start", cursor: "pointer" }}>
+            <div
+              className="d-sm"
+              onClick={handleLogout}
+              style={{
+                display: "flex",
+                alignItems: "start",
+                cursor: "pointer",
+              }}
+            >
               <img
                 alt="Crab"
                 loading="lazy"
@@ -352,12 +357,11 @@ export const SideBar = () => {
                 style={{ color: "transparent" }}
                 src="https://purchase3.blockdag.network//icons/logout.svg"
               />
-            <span style={{ fontSize: "12px" , marginLeft: "5px"}} >
-              Logout
-            </span>
+              <span style={{ fontSize: "12px", marginLeft: "5px" }}>
+                Logout
+              </span>
+            </div>
           </div>
-          </div>
-          
         </div>
       </ul>
     </div>

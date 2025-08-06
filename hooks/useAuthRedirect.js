@@ -1,21 +1,18 @@
 import { useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
-
+import { useAppKitAccount, useDisconnect } from "@reown/appkit/react";
 export function useAuthRedirect() {
-  const router = useRouter();
-  const pathname = usePathname();
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const walletAddress = localStorage.getItem("walletAddress");
-
-    // If not logged in, redirect to /login from any page except /login
-    if (!walletAddress && pathname !== "/") {
-      router.replace("/");
-    }
-    // If logged in and on /login or /, redirect to /dashboard
-    if (walletAddress && (pathname === "/")) {
-      router.replace("/dashboard");
-    }
-  }, [router, pathname]);
+  console.log("useAuthRedirect called");
+  // const { isConnected } = useAppKitAccount();
+  // const router = useRouter();
+  // useEffect(() => {
+  //   // If not logged in, redirect to /login from any page except /login
+  //   if (!isConnected) {
+  //     router.replace("/");
+  //   }
+  //   // If logged in and on /login or /, redirect to /dashboard
+  //   if (isConnected) {
+  //     router.replace("/dashboard");
+  //   }
+  // }, [isConnected, router]);
 }

@@ -1,11 +1,8 @@
 "use client";
 import { Login } from "../component/login";
 import Head from "next/head";
-import { createThirdwebClient } from "thirdweb";
 import { useAuthRedirect } from "../hooks/useAuthRedirect";
-const client = createThirdwebClient({
-  clientId: "39b118976e9e817bc3799d54ddf74337",
-});
+
 export default function Home() {
   useAuthRedirect();
   return (
@@ -54,8 +51,8 @@ export default function Home() {
           content="https://skills2evolve.com/twitter-image.jpg"
         />
       </Head>
-        <Login />
-        {/* <ConnectOnly /> */}
+      <Login />
+      {/* <ConnectOnly /> */}
     </>
   );
 }
