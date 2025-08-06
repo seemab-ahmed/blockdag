@@ -47,7 +47,10 @@ createAppKit({
   networks,
   projectId,
   metadata,
+
   features: {
+    email: false,
+    socials: [],
     analytics: true, // Optional - defaults to your Cloud configuration
   },
 });

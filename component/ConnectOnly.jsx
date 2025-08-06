@@ -23,7 +23,9 @@ export default function ConnectOnly() {
   }, [isConnected]);
 
   useEffect(() => {
-    if (isConnected) router.replace("/dashboard");
+    if (isConnected) {
+      router.replace("/dashboard");
+    }
     return;
   }, [isConnected]);
 
@@ -57,7 +59,6 @@ export default function ConnectOnly() {
       if (!result.exists) {
         throw new Error("Wallet not verified in our system");
       }
-
       // Successful verification
       setPopup({
         show: true,
@@ -98,7 +99,9 @@ export default function ConnectOnly() {
         </div>
       ) : (
         <button
-          onClick={() => open({ view: "Connect" })}
+          onClick={() => {
+            open({ view: "Connect" });
+          }}
           style={{
             padding: "12px 24px",
             borderRadius: "8px",
