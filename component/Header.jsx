@@ -1,41 +1,38 @@
 "use client";
 import { useRef } from "react";
 import React, { useState, useEffect } from "react";
-import { useActiveWallet, useActiveWalletConnectionStatus } from "thirdweb/react";
 import { useRouter } from "next/navigation";
+import { useAppKitAccount, useDisconnect } from "@reown/appkit/react";
 
 export const Header = () => {
-  const wallet = useActiveWallet();
+  const { address, isConnected } = useAppKitAccount();
+  const { disconnect } = useDisconnect();
   const router = useRouter();
   const logoutTimer = useRef(null);
-  const connectionStatus = useActiveWalletConnectionStatus();
+
+  // Auto-redirect if not connected
   useEffect(() => {
-    if (connectionStatus === "connected" && wallet) {
-      if (logoutTimer.current) clearTimeout(logoutTimer.current);
-      logoutTimer.current = setTimeout(async () => {
-        if (wallet && typeof wallet.disconnect === "function") {
-          await wallet.disconnect();
-        }
-        sessionStorage.setItem("justLoggedOut", "true");
-        localStorage.removeItem("walletAddress");
-        router.push("/");
-      },15 * 60 * 1000); // 15 minutes
-    }
-    return () => {
-      if (logoutTimer.current) clearTimeout(logoutTimer.current);
-    };
-  }, [connectionStatus, wallet, router]);
+    if (!isConnected) router.replace("/");
+  }, [isConnected]);
+  useEffect(() => {
+    if (!isConnected) return;
+    const timer = setTimeout(() => {
+      disconnect();
+      router.push("/");
+    }, 15 * 60 * 1000);
+
+    return () => clearTimeout(timer);
+  }, [isConnected, disconnect]);
+
   const handleLogout = async () => {
-    if (wallet && typeof wallet.disconnect === "function") {
-      console.log("Wallet disconnected successfully");
-      await wallet.disconnect();
-    }
+    disconnect();
+    console.log("Wallet disconnected successfully");
     if (typeof window !== "undefined") {
       sessionStorage.setItem("justLoggedOut", "true");
       localStorage.removeItem("walletAddress");
     }
-    router.push("/");
   };
+
   return (
     <div className="topbar_topbar__TxUPS">
       <p className="style_text__Z44aT style_lg__AdDq0">BlockDAG Dashboard v3</p>
