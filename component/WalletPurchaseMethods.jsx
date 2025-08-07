@@ -106,7 +106,7 @@ export default function WalletPurchaseMethods({
        setPopup(prev => ({
          open: true,
          type: transactionStatus.isError ? 'paymenterror' : transactionStatus.isLoading ? 'paymentloading' : 'paymentsuccess',
-         title: transactionStatus.isError ? 'Error' : 'Success',
+         title: transactionStatus.isError ? 'Error' : transactionStatus.isLoading ? 'paymentloading' : 'Success',
          message: transactionStatus.message.length > 100 ? transactionStatus.message.slice(0, 100) + '...' : transactionStatus.message,
          key: prev.key + 1
        }));

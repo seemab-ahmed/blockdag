@@ -51,7 +51,7 @@ const Popup = ({ message, title, onClose, type }) => {
             </div>
             <div className="style_doubleupPopup__hLys3">
               <div className="style_head__R1ASv">
-                {title}
+                {title && title}
                 <span>
                   <svg
                     width="24"
