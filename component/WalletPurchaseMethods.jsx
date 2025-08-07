@@ -236,7 +236,6 @@ export default function WalletPurchaseMethods({
             message={popup.message}
             type={popup.type}
             onClose={handleClosePopup}
-            isPending={isPending}
           />
         )}
       </div>
