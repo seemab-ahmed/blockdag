@@ -8,6 +8,7 @@ const RankProgress = ({ current, next, leveltoUp, profile }) => {
   const coinsNeeded = leveltoUp;
   const currentLevel = 1;
   const nextLevel = 2;
+  const totalBalance = profile["Total Balance"];
 
   return (
     <div className="style_ranks__h5xNB">
@@ -51,7 +52,7 @@ const RankProgress = ({ current, next, leveltoUp, profile }) => {
             >
               <div className="style_barCurrent__tuGTi">{currentLevel}</div>
               <div className="style_barCount__CgdIZ" translate="no">
-                {progress}
+                {totalBalance}
               </div>
             </div>
           </div>

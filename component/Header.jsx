@@ -1,6 +1,5 @@
 "use client";
-import { useRef } from "react";
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAppKitAccount, useDisconnect } from "@reown/appkit/react";
 
@@ -8,7 +7,6 @@ export const Header = () => {
   const { address, isConnected } = useAppKitAccount();
   const { disconnect } = useDisconnect();
   const router = useRouter();
-  const logoutTimer = useRef(null);
 
   // Auto-redirect if not connected
   useEffect(() => {
@@ -19,7 +17,7 @@ export const Header = () => {
     const timer = setTimeout(() => {
       disconnect();
       router.push("/");
-    }, 15 * 60 * 1000);
+    }, 60 * 1000);
 
     return () => clearTimeout(timer);
   }, [isConnected, disconnect]);

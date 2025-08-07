@@ -48,9 +48,11 @@ export default function WalletPurchaseMethods({
   setAmount,
   handleBuy,
   transactionStatus,
+  isPending,
   handleOpenCurrencyModal
 }) {
 
+  console.log(isPending);
     const [storedWallet, setStoredWallet] = useState(null);
       
     useEffect(() => {

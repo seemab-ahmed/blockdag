@@ -49,7 +49,7 @@ export const MainArea = () => {
   const { disconnect } = useDisconnect();
   const { chainId } = useAppKitNetwork();
   const { fetchBalance } = useAppKitBalance({ address });
-  const { sendTransaction } = useSendTransaction();
+  const { sendTransaction, isPending } = useSendTransaction();
   const [balance, setBalance] = useState(null);
 
   const [storedWallet, setStoredWallet] = useState(null);
@@ -459,6 +459,7 @@ export const MainArea = () => {
                 transactionStatus={transactionStatus}
                 handleOpenCurrencyModal={handleOpenCurrencyModal}
                 handleOpenModal={handleOpenModal}
+                isPending={isPending}
               />
             </div>
           ) : (
