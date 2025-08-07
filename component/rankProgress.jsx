@@ -51,7 +51,7 @@ const RankProgress = ({ current, next, leveltoUp, profile }) => {
             >
               <div className="style_barCurrent__tuGTi">{currentLevel}</div>
               <div className="style_barCount__CgdIZ" translate="no">
-                {progress?.toFixed(2)}
+                {progress}
               </div>
             </div>
           </div>
