@@ -1,10 +1,8 @@
 'use client';
 import { Header } from "../../component/Header";
 import { SideBar } from "../../component/SideBar";
-import { useAuthRedirect } from "../../hooks/useAuthRedirect";
 
 export default function DashboardLayout({ children }) {
-  useAuthRedirect();
   return (
       <div className="__className_ee1788">
         <main data-sidebar="deactive">

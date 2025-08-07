@@ -17,10 +17,14 @@
   /* --foreground: #171717; */
   --font-sans: var(--font-inter);
 }
-w3m-legal-footer {
+
+/* Hide WalletConnect footer */
+w3m-modal::part(footer) {
   display: none !important;
 }
-wui-ux-by-reown.branding-only {
+
+/* Alternative selectors if above doesn't work */
+wcm-footer, .wcm-footer, .wcm-powered-by {
   display: none !important;
 }
 

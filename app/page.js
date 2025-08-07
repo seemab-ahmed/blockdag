@@ -1,10 +1,8 @@
 "use client";
 import { Login } from "../component/login";
 import Head from "next/head";
-import { useAuthRedirect } from "../hooks/useAuthRedirect";
 
 export default function Home() {
-  useAuthRedirect();
   return (
     <>
       <Head>

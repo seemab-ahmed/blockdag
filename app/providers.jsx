@@ -21,8 +21,8 @@ const projectId = "21cdeb2da197b288fc649b9305a3aece";
 
 // 2. Create a metadata object - optional
 const metadata = {
-  name: "AppKit",
-  description: "AppKit Example",
+  name: "BlockDag",
+  description: "BlockDag",
   url: "https://example.com", // origin must match your domain & subdomain
   icons: ["https://avatars.githubusercontent.com/u/179229932"],
 };
@@ -42,6 +42,12 @@ createAppKit({
     primaryColor: "#2563eb",
     borderRadius: "8px",
     fontFamily: "inherit",
+
+    '--wcm-footer-display': 'none',
+    '--wcm-footer-background-color': 'transparent',
+    '--wcm-footer-font-size': '0',
+    '--wcm-footer-color': 'transparent',
+    '--wcm-footer-height': '0'
   },
   adapters: [wagmiAdapter],
   networks,
@@ -53,6 +59,13 @@ createAppKit({
     socials: [],
     analytics: true, // Optional - defaults to your Cloud configuration
   },
+   walletConnect: {
+    modalOptions: {
+      themeVariables: {
+        '--wcm-footer-display': 'none' // Ensures WalletConnect respects the setting
+      }
+    }
+  }
 });
 // 2. Set up query client
 const queryClient = new QueryClient();

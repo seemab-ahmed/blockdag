@@ -4,7 +4,7 @@ import React from "react";
 const RankProgress = ({ current, next, leveltoUp, profile }) => {
   const currentRank = current;
   const nextRank = next;
-  const progress = 0; // 0% progress
+  const progress = profile["progress bar"]; // 0% progress
   const coinsNeeded = leveltoUp;
   const currentLevel = 1;
   const nextLevel = 2;

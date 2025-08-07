@@ -20,6 +20,9 @@ export default function ConnectOnly() {
   // Auto-redirect if not connected
   useEffect(() => {
     if (!isConnected) router.replace("/");
+    // setTimeOut(()=>{
+    //   window.location.reload();
+    // }, 3000)
   }, [isConnected]);
 
   useEffect(() => {
@@ -91,6 +94,8 @@ export default function ConnectOnly() {
     if (isConnected) verifyWallet();
   }, [isConnected]);
 
+
+
   return (
     <div className="flex flex-col items-center gap-4 p-6">
       {isChecking ? (
@@ -108,6 +113,7 @@ export default function ConnectOnly() {
             backgroundColor: "#2563eb",
             color: "white",
             fontWeight: "600",
+            cursor: "pointer",
           }}
         >
           Connect Wallet
