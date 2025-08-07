@@ -4,30 +4,19 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useSheetData } from "../hooks/useSheetData";
 import { parseSheetData } from "../utils/sheetParser";
-
+import { useAppKitAccount } from '@reown/appkit/react';
 import { useDisconnect } from "wagmi";
 
 export const SideBar = () => {
   const router = useRouter();
+  const { address, isConnected } = useAppKitAccount();
   const { disconnect } = useDisconnect();
   const handleLogout = async () => {
-    disconnect();
-    console.log("Wallet disconnected successfully");
-    if (typeof window !== "undefined") {
-      sessionStorage.setItem("justLoggedOut", "true");
-      localStorage.removeItem("walletAddress");
-    }
+    await disconnect();
   };
 
-  const [storedWallet, setStoredWallet] = useState(null);
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      setStoredWallet(localStorage.getItem("walletAddress"));
-    }
-  }, []);
-
-  const { data: sheetData, isLoading, error } = useSheetData(storedWallet);
+  const { data: sheetData } = useSheetData(address);
   const { profile } = parseSheetData(sheetData);
 
   const [collapsed, setCollapsed] = useState(false);

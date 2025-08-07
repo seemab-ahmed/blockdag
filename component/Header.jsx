@@ -17,18 +17,14 @@ export const Header = () => {
     const timer = setTimeout(() => {
       disconnect();
       router.push("/");
-    }, 60 * 1000);
+    }, 2 * 60 * 1000);
 
     return () => clearTimeout(timer);
   }, [isConnected, disconnect]);
 
   const handleLogout = async () => {
-    disconnect();
-    console.log("Wallet disconnected successfully");
-    if (typeof window !== "undefined") {
-      sessionStorage.setItem("justLoggedOut", "true");
-      localStorage.removeItem("walletAddress");
-    }
+   await disconnect();
+   
   };
 
   return (

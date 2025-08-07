@@ -6,15 +6,8 @@ import { useAppKitAccount } from '@reown/appkit/react';
 
 
 const Profile = () => {
-  const { address, isConnected } = useAppKitAccount();
-    const [storedWallet, setStoredWallet] = useState(null);
-  
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      setStoredWallet(localStorage.getItem("walletAddress"));
-    }
-  }, []);
-   const { data: sheetData } = useSheetData(address);
+  const { address } = useAppKitAccount();
+  const { data: sheetData } = useSheetData(address);
   const { profile } = parseSheetData(sheetData);
 
   return (
@@ -86,7 +79,7 @@ const Profile = () => {
           <div className="profile_stat__q4375">
             <p className="style_text__Z44aT style_md__ZQhe4 style_primary__o7qgw">Wallet Address</p>
             <p className="style_text__Z44aT style_md__ZQhe4 profile_walletAddress__KmTeP style_font-700__9q48B">
-              {storedWallet}
+              {address}
             </p>
           </div>
           <div className="profile_btns___ypRC">

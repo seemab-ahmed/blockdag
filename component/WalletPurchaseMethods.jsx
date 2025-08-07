@@ -52,7 +52,7 @@ export default function WalletPurchaseMethods({
   handleOpenCurrencyModal
 }) {
 
-  console.log(isPending);
+  console.log(transactionStatus);
     const [storedWallet, setStoredWallet] = useState(null);
       
     useEffect(() => {
@@ -237,6 +237,7 @@ export default function WalletPurchaseMethods({
             message={popup.message}
             type={popup.type}
             onClose={handleClosePopup}
+            isPending={isPending}
           />
         )}
       </div>

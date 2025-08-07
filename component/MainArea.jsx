@@ -1,6 +1,5 @@
 "use client";
 import React, { useState, useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
 import BuyMiner from "./buyMiner";
 import RankProgress from "./rankProgress";
 import BeatVestingModal from "./beatVestingModal";
@@ -12,10 +11,8 @@ import { parseSheetData } from "../utils/sheetParser";
 import { parseConstantsData } from "../utils/parseConstantsData";
 import {
   useAppKitAccount,
-  useDisconnect,
   useAppKitBalance,
   useAppKitNetwork,
-  useAppKitEvents,
   useAppKitState,
 } from "@reown/appkit/react";
 import { usePublicClient, useSendTransaction } from "wagmi";
@@ -44,15 +41,11 @@ const USDT_ABI = [
 ];
 
 export const MainArea = () => {
-  const router = useRouter();
   const { address, isConnected } = useAppKitAccount();
-  const { disconnect } = useDisconnect();
   const { chainId } = useAppKitNetwork();
   const { fetchBalance } = useAppKitBalance({ address });
   const { sendTransaction, isPending } = useSendTransaction();
   const [balance, setBalance] = useState(null);
-
-  const [storedWallet, setStoredWallet] = useState(null);
   const [activeTab, setActiveTab] = useState("buyBDAG");
   const [activePaymentMethod, setActivePaymentMethod] = useState("ETH");
   const [amount, setAmount] = useState("");
@@ -78,11 +71,6 @@ export const MainArea = () => {
       setBalance(balance.data);
     });
   }, [address]);
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      setStoredWallet(localStorage.getItem("walletAddress"));
-    }
-  }, []);
 
   useEffect(() => {
     if (isConnected && address) {
