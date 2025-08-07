@@ -3,18 +3,12 @@ import React, { useState, useEffect } from 'react'
 
 import { useSheetData } from '../hooks/useSheetData';
 import { parseSheetData } from '../utils/sheetParser';
+import { useAppKitAccount } from '@reown/appkit/react';
 
 const Transaction = () => {
+  const { address, isConnected } = useAppKitAccount();
 
-  const [storedWallet, setStoredWallet] = useState(null);
-
-useEffect(() => {
-  if (typeof window !== "undefined") {
-    setStoredWallet(localStorage.getItem("walletAddress"));
-  }
-}, []);
-
-  const { data: sheetData, isLoading, error } = useSheetData(storedWallet);
+  const { data: sheetData, isLoading, error } = useSheetData(address);
   const { transactions } = parseSheetData(sheetData);
 
   // Calculate totals

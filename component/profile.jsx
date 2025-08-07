@@ -2,10 +2,11 @@
 import React, {useState, useEffect} from 'react';
 import { useSheetData } from '../hooks/useSheetData';
 import { parseSheetData } from '../utils/sheetParser';
+import { useAppKitAccount } from '@reown/appkit/react';
 
 
 const Profile = () => {
-  
+  const { address, isConnected } = useAppKitAccount();
     const [storedWallet, setStoredWallet] = useState(null);
   
   useEffect(() => {
@@ -13,7 +14,7 @@ const Profile = () => {
       setStoredWallet(localStorage.getItem("walletAddress"));
     }
   }, []);
-   const { data: sheetData } = useSheetData(storedWallet);
+   const { data: sheetData } = useSheetData(address);
   const { profile } = parseSheetData(sheetData);
 
   return (
