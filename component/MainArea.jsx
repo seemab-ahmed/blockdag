@@ -44,7 +44,7 @@ export const MainArea = () => {
   const { address, isConnected } = useAppKitAccount();
   const { chainId } = useAppKitNetwork();
   const { fetchBalance } = useAppKitBalance({ address });
-  const { sendTransaction, isPending } = useSendTransaction();
+  const { sendTransaction } = useSendTransaction();
   const [balance, setBalance] = useState(null);
   const [activeTab, setActiveTab] = useState("buyBDAG");
   const [activePaymentMethod, setActivePaymentMethod] = useState("ETH");
@@ -447,7 +447,6 @@ export const MainArea = () => {
                 transactionStatus={transactionStatus}
                 handleOpenCurrencyModal={handleOpenCurrencyModal}
                 handleOpenModal={handleOpenModal}
-                isPending={isPending}
               />
             </div>
           ) : (

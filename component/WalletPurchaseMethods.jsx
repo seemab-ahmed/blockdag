@@ -48,7 +48,6 @@ export default function WalletPurchaseMethods({
   setAmount,
   handleBuy,
   transactionStatus,
-  isPending,
   handleOpenCurrencyModal
 }) {
 
@@ -103,10 +102,10 @@ export default function WalletPurchaseMethods({
 
    // Show popup when transactionStatus.message changes, always increment key to force re-mount
    useEffect(() => {
-     if (transactionStatus.message) {
+     if (transactionStatus.message || transactionStatus.isLoading) {
        setPopup(prev => ({
          open: true,
-         type: transactionStatus.isError ? 'error' : 'success',
+         type: transactionStatus.isError ? 'paymenterror' : transactionStatus.isLoading ? 'paymentloading' : 'paymentsuccess',
          title: transactionStatus.isError ? 'Error' : 'Success',
          message: transactionStatus.message.length > 100 ? transactionStatus.message.slice(0, 100) + '...' : transactionStatus.message,
          key: prev.key + 1
