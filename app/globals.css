@@ -81,8 +81,9 @@ body {
   .popup_height_img {
     margin-top: 60px !important;
   }
-}
 
-.popup_height {
+  .popup_height {
   min-height: 360px !important;
 }
+}
+
