@@ -140,7 +140,7 @@ const Calculator = () => {
         </div>
       </div>
 
-      <div className="style_box__P4d5J" style={{ paddingBottom: '160px !important' }}>
+      <div className="style_box__P4d5J" style={{ paddingBottom: '170px !important' }}>
         <div className="style_coins__mi9VT">
           <p className="style_text__Z44aT style_lg__AdDq0 style_title__rXABb">
             Calculate your profits on coin launch
@@ -178,7 +178,7 @@ const Calculator = () => {
                     />
                   </div>
                 </div>
-              <div style={{marginTop: '6px', fontSize: '13px', color: '#888'}}>1 $ = {parseFloat(price) > 0 ? (1/parseFloat(price)).toFixed(4) : '0.0000'} BDAG (Sheet Price)</div>
+              {/* <div style={{marginTop: '6px', fontSize: '13px', color: '#888'}}>1 $ = {parseFloat(price) > 0 ? (1/parseFloat(price)).toFixed(4) : '0.0000'} BDAG (Sheet Price)</div> */}
               </div>
             </div>
           </div>
