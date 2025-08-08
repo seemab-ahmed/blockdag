@@ -46,7 +46,7 @@ const Transaction = () => {
               </div>
               <div className="transactions_lastInfo__GTAHL">
                 <p className="style_text__Z44aT style_md__ZQhe4">
-                  {tx["Base tokens"] ? `${tx["Base tokens"]} ` : ""}<span>BDAG</span>
+                  {tx["Base tokens"] ? `${tx["Base tokens"]} ` : ""}<span>{tx["crypto currency"]}</span>
                 </p>
                 <p className="style_text__Z44aT style_sm__RimS5 style_light__1UtMf">
                   Status: <span className={`style_text__Z44aT style_sm__RimS5 transactions_status__kTxb8 ${tx["status"] === "Confimed" ? "transactions_confirmed__D44w4" : ""}`}>{tx["status"] || "Unknown"}</span>
