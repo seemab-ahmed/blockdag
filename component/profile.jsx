@@ -10,6 +10,8 @@ const Profile = () => {
   const { data: sheetData } = useSheetData(address);
   const { profile } = parseSheetData(sheetData);
 
+  console.log(profile["No vesting"]);
+
   const currentRank = profile["Current Rank"];
   const nextRank = profile["Next rank"];
 
@@ -21,7 +23,7 @@ const Profile = () => {
   <div className="profile_info__hpTVz">
     <p className="style_text__Z44aT style_sm__RimS5 style_primary__o7qgw style_font-700__9q48B">Coins not subjected to vesting</p>
     <p className="style_text__Z44aT style_md__ZQhe4">
-      {profile["No vesting"]}
+      { profile["No vesting"] }
     </p>
   </div>
   {/* <div className="profile_info__hpTVz">

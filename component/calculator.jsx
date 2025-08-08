@@ -174,6 +174,7 @@ const Calculator = () => {
                     <input
                       value={usdAmount}
                       onChange={handleUsdChange}
+                      readOnly
                     />
                   </div>
                 </div>
@@ -227,10 +228,7 @@ const Calculator = () => {
                 style={{ width: `${100 - sliderValue}%` }}
               ></div>
             </div>
-            {/* Show slider-based price below the slider */}
-            <div style={{marginTop: '10px', fontSize: '13px', color: '#888'}}>
-              1 BDAG = ${(0.01 + (sliderValue * 0.0005)).toFixed(4)}
-            </div>
+            
           </div>
 
           <div className="style_selected__TZOjj">
@@ -238,7 +236,7 @@ const Calculator = () => {
               Stage <span className="style_text__Z44aT style_lg__AdDq0 style_big__MgAeM">{stage}</span>
             </p>
             <p className="style_text__Z44aT style_sm__RimS5">
-              Price <span className="style_text__Z44aT style_lg__AdDq0 style_big__MgAeM">{price} $BDAG</span>
+              Price <span className="style_text__Z44aT style_lg__AdDq0 style_big__MgAeM">{(0.01 + (sliderValue * 0.0005)).toFixed(4)} $BDAG</span>
             </p>
           </div>
         </div>
