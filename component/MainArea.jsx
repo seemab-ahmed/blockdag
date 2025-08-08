@@ -387,7 +387,7 @@ export const MainArea = () => {
                 <div className="wallet_doubleIt__OhJ0r">
                   <p
                     className="wallet_doubleText__JRiZM __className_665d18"
-                    onClick={handleOpenModal}
+                    // onClick={handleOpenModal}
                     style={{ cursor: "pointer" }}
                   >
                     BUY, BEAT VESTING PASS!
@@ -463,7 +463,7 @@ export const MainArea = () => {
       </div>
       <Transaction />
 
-      {isModalOpen && <BeatVestingModal onClose={handleCloseModal} />}
+      {/* {isModalOpen && <BeatVestingModal onClose={handleCloseModal} />} */}
       {isCurrencyModalOpen && (
         <SelectCurrencyModal onClose={handleCloseCurrencyModal} />
       )}
