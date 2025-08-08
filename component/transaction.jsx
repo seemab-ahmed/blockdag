@@ -62,7 +62,7 @@ const Transaction = () => {
               </div>
               <div className="transactions_lastInfo__GTAHL">
                 <p className="style_text__Z44aT style_md__ZQhe4">
-                  {tx["Base tokens"] ? `${tx["Base tokens"]} ` : ""}
+                  {tx["amount"] ? `${tx["amount"]} ` : ""}
                   <span>{tx["crypto currency"]}</span>
                 </p>
                 <p className="style_text__Z44aT style_sm__RimS5 style_light__1UtMf">
