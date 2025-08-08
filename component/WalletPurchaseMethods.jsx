@@ -72,7 +72,7 @@ export default function WalletPurchaseMethods({
       };
     });
   }, [minAmmount, prices.ETH, prices.BNB]);
-   const oneBdgPrice = profile && profile["1 Bdag"] ? profile["1 Bdag"] : 0.0276;
+   const oneBdgPrice = profile && profile["price for purchase"] ? profile["price for purchase"] : 0.0276;
 
    // Calculate USD value and BDAG worth from input amount and current price
    const getUsdValue = () => {
