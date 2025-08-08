@@ -44,7 +44,7 @@ export const MainArea = () => {
   const { address, isConnected } = useAppKitAccount();
   const { chainId } = useAppKitNetwork();
   const { fetchBalance } = useAppKitBalance({ address });
-  const { sendTransaction } = useSendTransaction();
+  const { sendTransaction, error, isError } = useSendTransaction();
   const [balance, setBalance] = useState(null);
   const [activeTab, setActiveTab] = useState("buyBDAG");
   const [activePaymentMethod, setActivePaymentMethod] = useState("ETH");
@@ -100,8 +100,8 @@ export const MainArea = () => {
   const successHandler = async (result) => {
     console.log(result);
 
-    if (result?.hash) {
-      const txHash = result.hash;
+    if (result) {
+      const txHash = result;
 
       setTransactionStatus({
         isLoading: true,
@@ -157,18 +157,18 @@ export const MainArea = () => {
     try {
       if (activePaymentMethod === "ETH" || activePaymentMethod === "BNB") {
         // Balance checking using wagmi hooks
-        if (balance) {
-          const balanceInEth = parseFloat(formatUnits(balance));
-          const transactionAmount = parseFloat(amount);
-          const estimatedGasFee = 0.002;
-          const totalNeeded = transactionAmount + estimatedGasFee;
+        // if (balance) {
+        //   const balanceInEth = parseFloat(formatUnits(balance));
+        //   const transactionAmount = parseFloat(amount);
+        //   const estimatedGasFee = 0.002;
+        //   const totalNeeded = transactionAmount + estimatedGasFee;
 
-          if (balanceInEth < totalNeeded) {
-            throw new Error(
-              `Insufficient funds. You have ${balanceInEth} ETH but need approximately ${totalNeeded} ETH (${transactionAmount} + ~${estimatedGasFee} gas fees)`
-            );
-          }
-        }
+        //   if (balanceInEth < totalNeeded) {
+        //     throw new Error(
+        //       `Insufficient funds. You have ${balanceInEth} ETH but need approximately ${totalNeeded} ETH (${transactionAmount} + ~${estimatedGasFee} gas fees)`
+        //     );
+        //   }
+        // }
 
         // Send transaction using wagmi
         sendTransaction({
@@ -182,26 +182,27 @@ export const MainArea = () => {
           );
         }
 
-        // For USDT we'll use the raw contract interaction
-        const amountInSmallestUnit = parseUnits(amount, 6); // USDT has 6 decimals
+        // // For USDT we'll use the raw contract interaction
+        // const amountInSmallestUnit = parseUnits(amount, 6); // USDT has 6 decimals
         const amountInUnits = parseUnits(amount, 6);
 
-        // Check USDT balance first
-        const balanceUSDT = await publicClient.readContract({
-          address: USDT_CONTRACT,
-          abi: USDT_ABI,
-          functionName: "balanceOf",
-          args: [address],
-        });
+        // // Check USDT balance first
+        // const balanceUSDT = await publicClient.readContract({
+        //   address: USDT_CONTRACT,
+        //   abi: USDT_ABI,
+        //   functionName: "balanceOf",
+        //   args: [address],
+        // });
+        // console.log(balanceUSDT, amountInUnits);
 
-        if (parseFloat(balance.balance) < amountInUnits) {
-          throw new Error(
-            `Insufficient USDT balance. You have ${formatUnits(
-              balance.balance,
-              6
-            )} USDT`
-          );
-        }
+        // if (parseFloat(balance.balance) < amountInUnits) {
+        //   throw new Error(
+        //     `Insufficient USDT balance. You have ${formatUnits(
+        //       balance.balance,
+        //       6
+        //     )} USDT`
+        //   );
+        // }
 
         sendTransaction(
           {
@@ -215,7 +216,7 @@ export const MainArea = () => {
             gas: 100000n, // 100,000 gas units
           },
           {
-            onSuccess: successHandler,
+            onSuccess: (hashData) => successHandler(hashData),
             onError: (error) => {
               console.error("USDT transaction error:", error);
               setTransactionStatus({
@@ -268,7 +269,13 @@ export const MainArea = () => {
   const handleCloseCurrencyModal = () => setIsCurrencyModalOpen(false);
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);
+  useEffect(() => {
+    console.log("Transaction Status:", isError);
 
+    if (isError) {
+      console.log("===>" + error.message);
+    }
+  }, [isError]);
   if (loading) {
     return (
       <div
@@ -315,9 +322,9 @@ export const MainArea = () => {
                 <path
                   d="M16.5 14H16.51M3 5V19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V9C21 7.89543 20.1046 7 19 7L5 7C3.89543 7 3 6.10457 3 5ZM3 5C3 3.89543 3.89543 3 5 3H17M17 14C17 14.2761 16.7761 14.5 16.5 14.5C16.2239 14.5 16 14.2761 16 14C16 13.7239 16.2239 13.5 16.5 13.5C16.7761 13.5 17 13.7239 17 14Z"
                   stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 ></path>
               </svg>
             </div>
@@ -340,9 +347,9 @@ export const MainArea = () => {
                 <path
                   d="M8.5 15.5627C8.5 16.8513 9.54467 17.896 10.8333 17.896H13C14.3807 17.896 15.5 16.7767 15.5 15.396C15.5 14.0153 14.3807 12.896 13 12.896H11C9.61929 12.896 8.5 11.7767 8.5 10.396C8.5 9.01528 9.61929 7.896 11 7.896H13.1667C14.4553 7.896 15.5 8.94067 15.5 10.2293M12 6.396V7.896M12 17.896V19.396M22 12.896C22 18.4188 17.5228 22.896 12 22.896C6.47715 22.896 2 18.4188 2 12.896C2 7.37315 6.47715 2.896 12 2.896C17.5228 2.896 22 7.37315 22 12.896Z"
                   stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 ></path>
               </svg>
             </div>
