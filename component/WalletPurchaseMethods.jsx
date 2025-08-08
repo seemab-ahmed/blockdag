@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import Popup from './Popup';
 import { useSheetData } from '../hooks/useSheetData';
 import { parseSheetData } from '../utils/sheetParser';
-
+import { useAppKitAccount } from '@reown/appkit/react';
 const MIN_PURCHASE_USD = 1000; // Replace with DB value if needed
 
 
@@ -52,14 +52,9 @@ export default function WalletPurchaseMethods({
 }) {
 
   console.log(transactionStatus);
-    const [storedWallet, setStoredWallet] = useState(null);
-      
-    useEffect(() => {
-        if (typeof window !== "undefined") {
-          setStoredWallet(localStorage.getItem("walletAddress"));
-        }
-    }, []);
-  const { data: sheetData } = useSheetData(storedWallet);
+  const { address } = useAppKitAccount();
+    
+  const { data: sheetData } = useSheetData(address);
   const { profile } = parseSheetData(sheetData);
   const [prices, setPrices] = useState({ ETH: null, BNB: null }); 
   const [minAmounts, setMinAmounts] = useState({ ETH: null, BNB: null, USDT: null });
