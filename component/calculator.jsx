@@ -140,7 +140,7 @@ const Calculator = () => {
         </div>
       </div>
 
-      <div className="style_box__P4d5J" style={{ paddingBottom: '140px !important' }}>
+      <div className="style_box__P4d5J" style={{ paddingBottom: '160px !important' }}>
         <div className="style_coins__mi9VT">
           <p className="style_text__Z44aT style_lg__AdDq0 style_title__rXABb">
             Calculate your profits on coin launch
@@ -168,7 +168,7 @@ const Calculator = () => {
             <div className="style_formGroup__8kJRT">
               <label>USD Amount</label>
               <div className="style_formController__kBuhk">
-                <p >$</p>
+                <p className="override-margin">$</p>
                 <div className="style_input__d5JsO">
                   <div className="style_controller__nvybk">
                     <input

@@ -94,7 +94,7 @@ const Popup = ({ message, title, onClose, type }) => {
                     style={{ color: "transparent" }}
                   />
                 </>
-              ) : type === "success" ? (
+              ) : type === "paymentsuccess" ? (
                 
                 <>
                 <img
@@ -127,7 +127,7 @@ const Popup = ({ message, title, onClose, type }) => {
                   <>{message}</>
                 ) : type === "paymentloading" ? (
                   <>Pending Action ...</>
-                ) : type === "success" ? (
+                ) : type === "paymentsuccess" ? (
                   <>Payment Successfully Transfered !</>
                 ) : (
                   <>{message}</>

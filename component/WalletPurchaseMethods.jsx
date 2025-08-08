@@ -51,7 +51,6 @@ export default function WalletPurchaseMethods({
   handleOpenCurrencyModal
 }) {
 
-  console.log(transactionStatus);
   const { address } = useAppKitAccount();
     
   const { data: sheetData } = useSheetData(address);

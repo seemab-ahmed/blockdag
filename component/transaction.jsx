@@ -26,7 +26,14 @@ const Transaction = () => {
     return <div>Error loading transactions</div>;
   }
 
-  const currency = tx["crypto currency"]?.toLowerCase(); // Normalize for matching
+ 
+
+  return (
+    <div className="transactions_lastTransactionsArea__DfC1R">
+      <div className="transactions_lastList__zrOK_">
+        {transactions.map((tx, idx) => {
+
+           const currency = tx["crypto currency"]?.toLowerCase(); // Normalize for matching
 
   let imageSrc = "https://purchase3.blockdag.network/favicon.png"; // Default fallback
 
@@ -37,11 +44,8 @@ const Transaction = () => {
   } else if (currency === "bnb") {
     imageSrc = "https://purchase3.blockdag.network/images/coins/favicon.svg";
   }
-
-  return (
-    <div className="transactions_lastTransactionsArea__DfC1R">
-      <div className="transactions_lastList__zrOK_">
-        {transactions.map((tx, idx) => (
+          
+          return (
           <div className="transactions_lastItem__k8rQB" key={idx}>
             <div className="transactions_left__mveP_">
               <div className="transactions_iconBox__OJutv">
@@ -69,8 +73,10 @@ const Transaction = () => {
                         ? "transactions_confirmed__D44w4"
                         : ""
                     }`}
+
+                    style={{color: "#14cc26"}}
                   >
-                    {tx["status"] || "Unknown"}
+                    {tx["status"] || " "}
                   </span>
                   <span
                     className={`transactions_iconSpan__bWFL8 ${
@@ -112,7 +118,7 @@ const Transaction = () => {
               </p>
             </div>
           </div>
-        ))}
+        )})}
       </div>
       <div className="transactions_pagination___OvtL">
         <button className="transactions_prev__bvpSA" disabled>
