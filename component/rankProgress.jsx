@@ -16,9 +16,7 @@ const RankProgress = ({ current, next, leveltoUp, profile }) => {
         <span className="style_text__Z44aT style_md__ZQhe4">
           You need{" "}
           <span className="style_text__Z44aT style_md__ZQhe4 style_primary__o7qgw">
-            <a href="/dashboard" className="cursor-pointer">
               {coinsNeeded} more BDAG
-            </a>
           </span>{" "}
           coins to level up.
         </span>

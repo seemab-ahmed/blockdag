@@ -17,7 +17,7 @@ export const Header = () => {
     const timer = setTimeout(() => {
       disconnect();
       router.push("/");
-    }, 2 * 60 * 1000);
+    }, 15 * 60 * 1000);
 
     return () => clearTimeout(timer);
   }, [isConnected, disconnect]);
@@ -31,7 +31,7 @@ export const Header = () => {
     <div className="topbar_topbar__TxUPS">
       <p className="style_text__Z44aT style_lg__AdDq0">BlockDAG Dashboard v3</p>
       <div className="topbar_right__XN7dF lightButtonImg">
-        <div className="style_levelprogress__ItXuz">
+        {/* <div className="style_levelprogress__ItXuz">
           <div className="style_progress__40Zve">
             <div
               className="style_circle__DLGMX"
@@ -44,21 +44,7 @@ export const Header = () => {
               <span></span>
             </div>
           </div>
-        </div>
-        <a className="topbar_button__kWwDK" href="/#buy">
-          <img
-            alt="BlockDAG"
-            loading="lazy"
-            width="40"
-            height="40"
-            decoding="async"
-            data-nimg="1"
-            className="topbar_easter__wqKZx"
-            style={{ color: "transparent" }}
-            src="https://purchase3.blockdag.network/3d.gif"
-          />
-          <p className="style_text__Z44aT style_sm__RimS5">BEAT VESTING</p>
-        </a>
+        </div> */}
         <div className="topbar_button__kWwDK">
           <img
             alt="logout"

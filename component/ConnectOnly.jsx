@@ -39,7 +39,7 @@ export default function ConnectOnly() {
     const timer = setTimeout(() => {
       disconnect();
       router.push("/");
-    }, 2 * 60 * 1000);
+    }, 15 * 60 * 1000);
 
     return () => clearTimeout(timer);
   }, [isConnected, disconnect]);

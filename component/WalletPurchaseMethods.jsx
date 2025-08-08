@@ -4,7 +4,7 @@ import Popup from './Popup';
 import { useSheetData } from '../hooks/useSheetData';
 import { parseSheetData } from '../utils/sheetParser';
 import { useAppKitAccount } from '@reown/appkit/react';
-const MIN_PURCHASE_USD = 1000; // Replace with DB value if needed
+// Replace with DB value if needed
 
 
 const currencySVGs = {
@@ -60,7 +60,7 @@ export default function WalletPurchaseMethods({
   const [minAmounts, setMinAmounts] = useState({ ETH: null, BNB: null, USDT: null });
   const [minText, setMinText] = useState('Loading prices...');
   // Always use latest profile value for minAmmount
-  const minAmmount = profile && profile["Min to purchase"] ? Number(profile["Min to purchase"]) : MIN_PURCHASE_USD;
+  const minAmmount = profile && profile["Min to purchase"] ? Number(profile["Min to purchase"]) : 0.001;
   // Update minAmounts when profile or prices change
   useEffect(() => {
     setMinAmounts(prev => {
