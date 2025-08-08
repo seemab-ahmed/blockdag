@@ -31,23 +31,21 @@ const Popup = ({ message, title, onClose, type }) => {
               style={{ cursor: "pointer", zIndex: 99999 }}
               onClick={onClose}
             >
-             
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M18 6L6 18M6 6L18 18"
-                    stroke="currentColor"
-                    strokeWidth="3"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  ></path>
-                </svg>
-             
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M18 6L6 18M6 6L18 18"
+                  stroke="currentColor"
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                ></path>
+              </svg>
             </div>
             <div className="style_doubleupPopup__hLys3">
               <div className="style_head__R1ASv">
@@ -70,39 +68,70 @@ const Popup = ({ message, title, onClose, type }) => {
                   </svg>
                 </span>
               </div>
-               {type === "paymenterror" ? (
-                <>payment Error Icon</>
+              {type === "paymenterror" ? (
+                <>
+                  <img
+                    alt="waiting"
+                    loading="lazy"
+                    width={125}
+                    height={125}
+                    decoding="async"
+                    className="statusPopup_waitingImg___AFKu"
+                    src="https://purchase3.blockdag.network/images/failed.png"
+                    style={{ color: "transparent" }}
+                  />
+                </>
               ) : type === "paymentloading" ? (
-                <>payment Loading Icon</>
+                <>
+                  <img
+                    alt="waiting"
+                    loading="lazy"
+                    width={125}
+                    height={125}
+                    decoding="async"
+                    className="statusPopup_waitingImg___AFKu"
+                    src="https://purchase3.blockdag.network/images/waiting.png"
+                    style={{ color: "transparent" }}
+                  />
+                </>
               ) : type === "success" ? (
-                <>payment Success Icon</>
-              ) : (
-              <>
-              <img
-                alt="BlockDAG"
-                loading="lazy"
-                width="90"
-                height="90"
-                decoding="async"
-                className="style_gif__2rpWn"
-                src="https://purchase3.blockdag.network/bdag.gif"
-                style={{ color: "transparent" }}
-              />
-              </>
-               )}
-              <p className="style_title___arg6 __className_665d18">
                 
-                {
-                  type === "paymenterror" ? (
-                <>Transaction Failed!</>
-              ) : type === "paymentloading" ? (
-                <>Pending ...</>
-              ) : type === "success" ? (
-                <>Payment Successfully Transfered !</>
+                <>
+                <img
+                    alt="waiting"
+                    loading="lazy"
+                    width={125}
+                    height={125}
+                    decoding="async"
+                    className="statusPopup_waitingImg___AFKu"
+                    src="https://purchase3.blockdag.network/images/success.png"
+                    style={{ color: "transparent" }}
+                  />
+                </>
               ) : (
-                <>{message}</>
+                <>
+                  <img
+                    alt="BlockDAG"
+                    loading="lazy"
+                    width="90"
+                    height="90"
+                    decoding="async"
+                    className="style_gif__2rpWn"
+                    src="https://purchase3.blockdag.network/bdag.gif"
+                    style={{ color: "transparent" }}
+                  />
+                </>
               )}
-                
+              <p className="style_title___arg6 __className_665d18">
+                {type === "paymenterror" ? (
+                  <>Transaction Failed!</>
+                ) : type === "paymentloading" ? (
+                  <>Pending Action ...</>
+                ) : type === "success" ? (
+                  <>Payment Successfully Transfered !</>
+                ) : (
+                  <>{message}</>
+                )}
               </p>
             </div>
           </div>
