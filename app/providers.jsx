@@ -43,29 +43,35 @@ createAppKit({
     borderRadius: "8px",
     fontFamily: "inherit",
 
-    '--wcm-footer-display': 'none',
-    '--wcm-footer-background-color': 'transparent',
-    '--wcm-footer-font-size': '0',
-    '--wcm-footer-color': 'transparent',
-    '--wcm-footer-height': '0'
+    "--wcm-footer-display": "none",
+    "--wcm-footer-background-color": "transparent",
+    "--wcm-footer-font-size": "0",
+    "--wcm-footer-color": "transparent",
+    "--wcm-footer-height": "0",
   },
   adapters: [wagmiAdapter],
   networks,
   projectId,
   metadata,
-
+  featuredWalletIds: [
+    "4622a2b2d6af1c9844944291e5e7351a6aa24cd7b23099efac1b2fd875da31a0",
+    "c57ca95b47569778a828d19178114f4db188b89b763c899ba0be274e97267d96",
+    "dd15a3530dc4de4c50ebb22010824c41337403efec713f1187695c72934fb94c",
+    "8a0ee50d1f22f6651afcae7eb4253e52a3310b90af5daef78a8c4929a9bb99d4",
+    "fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa",
+  ],
   features: {
     email: false,
     socials: [],
-    analytics: true, // Optional - defaults to your Cloud configuration
+    allWallets: true,
   },
-   walletConnect: {
+  walletConnect: {
     modalOptions: {
       themeVariables: {
-        '--wcm-footer-display': 'none' // Ensures WalletConnect respects the setting
-      }
-    }
-  }
+        "--wcm-footer-display": "none", // Ensures WalletConnect respects the setting
+      },
+    },
+  },
 });
 // 2. Set up query client
 const queryClient = new QueryClient();
