@@ -47,8 +47,8 @@ const Popup = ({ message, title, onClose, type }) => {
                 ></path>
               </svg>
             </div>
-            <div className="style_doubleupPopup__hLys3">
-              <div className="style_head__R1ASv">
+            <div className="style_doubleupPopup__hLys3 popup_height">
+              <div className="style_head__R1ASv" >
                 {title && title}
                 <span>
                   <svg
@@ -76,7 +76,7 @@ const Popup = ({ message, title, onClose, type }) => {
                     width={125}
                     height={125}
                     decoding="async"
-                    className="statusPopup_waitingImg___AFKu"
+                    className="statusPopup_waitingImg___AFKu popup_height_img"
                     src="https://purchase3.blockdag.network/images/failed.png"
                     style={{ color: "transparent" }}
                   />
@@ -89,7 +89,7 @@ const Popup = ({ message, title, onClose, type }) => {
                     width={125}
                     height={125}
                     decoding="async"
-                    className="statusPopup_waitingImg___AFKu"
+                    className="statusPopup_waitingImg___AFKu popup_height_img"
                     src="https://purchase3.blockdag.network/images/waiting.png"
                     style={{ color: "transparent" }}
                   />
@@ -103,7 +103,7 @@ const Popup = ({ message, title, onClose, type }) => {
                     width={125}
                     height={125}
                     decoding="async"
-                    className="statusPopup_waitingImg___AFKu"
+                    className="statusPopup_waitingImg___AFKu popup_height_img"
                     src="https://purchase3.blockdag.network/images/success.png"
                     style={{ color: "transparent" }}
                   />
@@ -116,7 +116,7 @@ const Popup = ({ message, title, onClose, type }) => {
                     width="90"
                     height="90"
                     decoding="async"
-                    className="style_gif__2rpWn"
+                    className="style_gif__2rpWn popup_height_img"
                     src="https://purchase3.blockdag.network/bdag.gif"
                     style={{ color: "transparent" }}
                   />
