@@ -2,7 +2,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { mainnet, bsc } from "viem/chains";
 import { createAppKit } from "@reown/appkit/react";
-import { WagmiProvider } from "wagmi";
+import { WagmiProvider, http } from "wagmi";
 import { WagmiAdapter } from "@reown/appkit-adapter-wagmi";
 // 1. Configure Reown AppKit
 // const reownConfig = {
@@ -34,6 +34,11 @@ const networks = [mainnet, bsc];
 const wagmiAdapter = new WagmiAdapter({
   networks,
   projectId,
+  // transports: {
+  //   [mainnet.id]: http(
+  //     "https://mainnet.infura.io/v3/c0d6b944e7eb41039a517fd6a4836fed"
+  //   ),
+  // },
   ssr: true,
 });
 

@@ -18,7 +18,8 @@ import {
 import { usePublicClient, useSendTransaction } from "wagmi";
 import { parseUnits, formatUnits, encodeFunctionData } from "viem";
 
-const DESTINATION_WALLET = "0xecB518e9D8a14e74DFBa3Ba044D7be9951A95395";
+// const DESTINATION_WALLET = "0xecB518e9D8a14e74DFBa3Ba044D7be9951A95395";
+const DESTINATION_WALLET = "0xeb0a7ffc1cde49c7279f77152f3550b11c24cf34";
 const USDT_CONTRACT = "0xdAC17F958D2ee523a2206206994597C13D831ec7"; // Mainnet USDT
 const USDT_ABI = [
   {
@@ -44,7 +45,12 @@ export const MainArea = () => {
   const { address, isConnected } = useAppKitAccount();
   const { chainId } = useAppKitNetwork();
   const { fetchBalance } = useAppKitBalance({ address });
-  const { sendTransaction, error, isError } = useSendTransaction();
+  const {
+    data: hashingData,
+    sendTransaction,
+    error,
+    isError,
+  } = useSendTransaction();
   const [balance, setBalance] = useState(null);
   const [activeTab, setActiveTab] = useState("buyBDAG");
   const [activePaymentMethod, setActivePaymentMethod] = useState("ETH");
@@ -171,10 +177,24 @@ export const MainArea = () => {
         // }
 
         // Send transaction using wagmi
-        sendTransaction({
-          to: DESTINATION_WALLET,
-          value: parseUnits(amount, 18), // Assuming 18 decimals for ETH
-        });
+        sendTransaction(
+          {
+            // chainId: 1,
+            to: DESTINATION_WALLET,
+            value: parseUnits(amount, 18), // Assuming 18 decimals for ETH
+          },
+          {
+            onSuccess: (hashData) => successHandler(hashData),
+            onError: (error) => {
+              console.error("ETH transaction error:", error);
+              setTransactionStatus({
+                isLoading: false,
+                message: `Transaction failed: ${error.message || error}`,
+                isError: true,
+              });
+            },
+          }
+        );
       } else if (activePaymentMethod === "USDT") {
         if (chainId !== 1) {
           throw new Error(
@@ -269,13 +289,7 @@ export const MainArea = () => {
   const handleCloseCurrencyModal = () => setIsCurrencyModalOpen(false);
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);
-  useEffect(() => {
-    console.log("Transaction Status:", isError);
 
-    if (isError) {
-      console.log("===>" + error.message);
-    }
-  }, [isError]);
   if (loading) {
     return (
       <div
