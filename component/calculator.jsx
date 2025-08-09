@@ -168,7 +168,7 @@ const Calculator = () => {
             <div className="style_formGroup__8kJRT">
               <label>USD Amount</label>
               <div className="style_formController__kBuhk">
-                <p className="override-margin">$</p>
+                <p>$</p>
                 <div className="style_input__d5JsO">
                   <div className="style_controller__nvybk">
                     <input

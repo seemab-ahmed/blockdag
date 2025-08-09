@@ -7,7 +7,7 @@ const inter = Inter({
 });
 
 export const metadata = {
-  title: "Blockdag",
+  title: "Become a part of BlockDag Network",
   description: "Blockdag is a decentralized, scalable, and secure blockchain platform designed for high-performance applications.",
 };
 

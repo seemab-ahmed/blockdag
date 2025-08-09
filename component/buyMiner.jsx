@@ -9,6 +9,16 @@ const BuyMiner = ({handleClickModal}) => {
     x100: 0
   });
 
+  const [promoCode, setPromoCode] = useState("");
+  const [applied, setApplied] = useState(false);
+
+  const handleApply = (e) => {
+    e.preventDefault();
+    if (promoCode.trim() !== "") {
+      setApplied(true);
+    }
+  };
+
   const handleIncrement = (minerType) => {
     setMinerCounts(prev => ({
       ...prev,
@@ -209,7 +219,6 @@ const BuyMiner = ({handleClickModal}) => {
                 className="wallet_input__RkQZe" 
                 placeholder="Enter amount" 
                 type="number" 
-                disabled={Object.values(minerCounts).every(count => count === 0)}
               />
               <div className="wallet_selectedMethodCurrencyLabel__YO_mf">
                 <p className="style_text__Z44aT style_md__ZQhe4">{activePaymentMethod}</p>
@@ -230,26 +239,37 @@ const BuyMiner = ({handleClickModal}) => {
         </div>
         
         <div translate="no" className="promoCode_promocode__AHHVr">
-          <div className="promoCode_promoForm__zxQC2">
-            <form action="">
-              <div className="promoCode_formGroup__pU0vL">
-                <div className="style_input__d5JsO">
-                  <div className="style_controller__nvybk">
-                    <input id="promoInput" placeholder="Enter Your Special Key" type="text" name="promoInput" />
-                    <div className="style_right__R6XjJ">
-                      <label className="style_customLabel__FJRk4">
-                        <p className="style_text__Z44aT style_sm__RimS5 style_light__1UtMf">Apply</p>
-                      </label>
-                    </div>
-                  </div>
+      <div className="promoCode_promoForm__zxQC2">
+        <form onSubmit={handleApply}>
+          <div className="promoCode_formGroup__pU0vL">
+            <div className="style_input__d5JsO">
+              <div className="style_controller__nvybk">
+                <input
+                  id="promoInput1"
+                  placeholder="Enter Your Special Key"
+                  type="text"
+                  name="promoInput"
+                  value={promoCode}
+                  onChange={(e) => setPromoCode(e.target.value)}
+                />
+                <div className="style_right__R6XjJ">
+                  <label className="style_customLabel__FJRk4">
+                    <p className="style_text__Z44aT style_sm__RimS5 style_light__1UtMf">
+                      {applied ? "Applied" : "Apply"}
+                    </p>
+                  </label>
                 </div>
               </div>
-              <label htmlFor="promoInput" className="promoCode_bottom__y71zv">
-                <p className="style_text__Z44aT style_sm__RimS5 style_font-700__9q48B">Do you have a special key?</p>
-              </label>
-            </form>
+            </div>
           </div>
-        </div>
+          <label htmlFor="promoInput" className="promoCode_bottom__y71zv">
+            <p className="style_text__Z44aT style_sm__RimS5 style_font-700__9q48B">
+              Do you have a special key?
+            </p>
+          </label>
+        </form>
+      </div>
+    </div>
       </div>
     </div>
   );
