@@ -154,6 +154,18 @@ export default function WalletPurchaseMethods({
   const isBuyEnabled = (() => {
     return usdValue >= minAmmount && !transactionStatus.isLoading;
   })();
+
+
+  const [promoCode, setPromoCode] = useState("");
+  const [applied, setApplied] = useState(false);
+
+  const handleApply = (e) => {
+    e.preventDefault();
+    if (promoCode.trim() !== "") {
+      setApplied(true);
+    }
+  };
+
   return (
     <div className="wallet_walletContent__3lxb6">
       <div className="wallet_purchaseMethods__n4mDq">
@@ -234,23 +246,35 @@ export default function WalletPurchaseMethods({
         )}
       </div>
       <div translate="no" className="promoCode_promocode__fp4Nm undefined">
-        <div className="promoCode_promoForm__0loMK">
-          <form action="" className="promoCode_active__AfYNo">
-            <div className="promoCode_formGroup__dhqfn">
-              <div className="style_input__d5JsO">
-                <div className="style_controller__nvybk">
-                  <input id="promoInput" placeholder="Enter Your Special Key" type="text" value="" name="promoInput" readOnly />
-                  <div className="style_right__R6XjJ">
-                    <label className="style_customLabel__FJRk4">
-                      <p className="style_text__Z44aT style_sm__RimS5 style_light__1UtMf">Apply</p>
-                    </label>
-                  </div>
+      <div className="promoCode_promoForm__0loMK">
+        <form onSubmit={handleApply} className="promoCode_active__AfYNo">
+          <div className="promoCode_formGroup__dhqfn">
+            <div className="style_input__d5JsO">
+              <div className="style_controller__nvybk">
+                <input
+                  id="promoInput12-1"
+                  placeholder="Enter Your Special Key"
+                  type="text"
+                  value={promoCode}
+                  name="promoInput"
+                  onChange={(e) => {
+                    setPromoCode(e.target.value);
+                    if (applied) setApplied(false); // reset if code changes
+                  }}
+                />
+                <div className="style_right__R6XjJ">
+                  <label className="style_customLabel__FJRk4" onClick={handleApply}>
+                    <p className="style_text__Z44aT style_sm__RimS5 style_light__1UtMf" style={{ color: applied ? "#25FF6F" : "" }}>
+                      {applied ? "Applied" : "Apply"}
+                    </p>
+                  </label>
                 </div>
               </div>
             </div>
-          </form>
-        </div>
+          </div>
+        </form>
       </div>
+    </div>
     </div>
   );
 }
