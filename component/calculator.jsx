@@ -140,7 +140,7 @@ const Calculator = () => {
         </div>
       </div>
 
-      <div className="style_box__P4d5J" style={{ paddingBottom: '140px !important' }}>
+      <div className="style_box__P4d5J" style={{ paddingBottom: '160px !important' }}>
         <div className="style_coins__mi9VT">
           <p className="style_text__Z44aT style_lg__AdDq0 style_title__rXABb">
             Calculate your profits on coin launch
@@ -168,12 +168,13 @@ const Calculator = () => {
             <div className="style_formGroup__8kJRT">
               <label>USD Amount</label>
               <div className="style_formController__kBuhk">
-                <p >$</p>
+                <p className="override-margin">$</p>
                 <div className="style_input__d5JsO">
                   <div className="style_controller__nvybk">
                     <input
                       value={usdAmount}
                       onChange={handleUsdChange}
+                      readOnly
                     />
                   </div>
                 </div>
@@ -227,10 +228,7 @@ const Calculator = () => {
                 style={{ width: `${100 - sliderValue}%` }}
               ></div>
             </div>
-            {/* Show slider-based price below the slider */}
-            <div style={{marginTop: '10px', fontSize: '13px', color: '#888'}}>
-              1 BDAG = ${(0.01 + (sliderValue * 0.0005)).toFixed(4)}
-            </div>
+            
           </div>
 
           <div className="style_selected__TZOjj">
@@ -238,7 +236,7 @@ const Calculator = () => {
               Stage <span className="style_text__Z44aT style_lg__AdDq0 style_big__MgAeM">{stage}</span>
             </p>
             <p className="style_text__Z44aT style_sm__RimS5">
-              Price <span className="style_text__Z44aT style_lg__AdDq0 style_big__MgAeM">{price} $BDAG</span>
+              Price <span className="style_text__Z44aT style_lg__AdDq0 style_big__MgAeM">{(0.01 + (sliderValue * 0.0005)).toFixed(4)} $BDAG</span>
             </p>
           </div>
         </div>

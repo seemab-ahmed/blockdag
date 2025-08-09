@@ -51,7 +51,6 @@ export default function WalletPurchaseMethods({
   handleOpenCurrencyModal
 }) {
 
-  console.log(transactionStatus);
   const { address } = useAppKitAccount();
     
   const { data: sheetData } = useSheetData(address);
@@ -101,7 +100,7 @@ export default function WalletPurchaseMethods({
        setPopup(prev => ({
          open: true,
          type: transactionStatus.isError ? 'paymenterror' : transactionStatus.isLoading ? 'paymentloading' : 'paymentsuccess',
-         title: transactionStatus.isError ? 'Error' : transactionStatus.isLoading ? 'paymentloading' : 'Success',
+         title: transactionStatus.isError ? 'Error' : transactionStatus.isLoading ? 'Processing' : 'Success',
          message: transactionStatus.message.length > 100 ? transactionStatus.message.slice(0, 100) + '...' : transactionStatus.message,
          key: prev.key + 1
        }));

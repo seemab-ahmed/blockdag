@@ -94,7 +94,7 @@ const Popup = ({ message, title, onClose, type }) => {
                     style={{ color: "transparent" }}
                   />
                 </>
-              ) : type === "success" ? (
+              ) : type === "paymentsuccess" ? (
                 
                 <>
                 <img
@@ -124,10 +124,10 @@ const Popup = ({ message, title, onClose, type }) => {
               )}
               <p className="style_title___arg6 __className_665d18">
                 {type === "paymenterror" ? (
-                  <>Transaction Failed!</>
+                  <>{message}</>
                 ) : type === "paymentloading" ? (
                   <>Pending Action ...</>
-                ) : type === "success" ? (
+                ) : type === "paymentsuccess" ? (
                   <>Payment Successfully Transfered !</>
                 ) : (
                   <>{message}</>

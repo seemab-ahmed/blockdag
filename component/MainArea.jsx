@@ -380,7 +380,7 @@ export const MainArea = () => {
                   <div className="wallet_walletPriceItem__E7HOg">
                     <p className="style_text__Z44aT style_md__ZQhe4">1 BDAG:</p>
                     <p className="style_text__Z44aT style_md__ZQhe4">
-                      ${constants["Batch Price"] || "0.00"}
+                      ${profile["price for purchase"] || "0.00"}
                     </p>
                   </div>
                   <div className="wallet_walletPriceItem__E7HOg">

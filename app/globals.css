@@ -28,6 +28,11 @@ wcm-footer, .wcm-footer, .wcm-powered-by {
   display: none !important;
 }
 
+
+.override-margin{
+  margin-top: -10px !important;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);

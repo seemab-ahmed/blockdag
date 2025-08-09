@@ -10,24 +10,20 @@ const Profile = () => {
   const { data: sheetData } = useSheetData(address);
   const { profile } = parseSheetData(sheetData);
 
+  console.log(profile["No vesting"]);
+
+  const currentRank = profile["Current Rank"];
+  const nextRank = profile["Next rank"];
+
+
   return (
     <div className="profile_profile__7BfzS">
       <div className="profile_userInfoArea__HKeSC">
         <div className="profile_userPlace__Yb8ll">
   <div className="profile_info__hpTVz">
-    <p className="style_text__Z44aT style_sm__RimS5 style_primary__o7qgw style_font-700__9q48B">#? Your Place</p>
+    <p className="style_text__Z44aT style_sm__RimS5 style_primary__o7qgw style_font-700__9q48B">Coins not subjected to vesting</p>
     <p className="style_text__Z44aT style_md__ZQhe4">
-      <img 
-        alt="Crab" 
-        loading="lazy" 
-        width="24" 
-        height="24" 
-        decoding="async" 
-        data-nimg="1" 
-        src="https://purchase3.blockdag.network/images/ranks/crab.svg" 
-        style={{ color: 'transparent' }} 
-      /> 
-      0xc7...3
+      { profile["No vesting"] }
     </p>
   </div>
   {/* <div className="profile_info__hpTVz">
@@ -40,14 +36,14 @@ const Profile = () => {
             <div className="profile_info__hpTVz">
               <p className="style_text__Z44aT style_sm__RimS5 style_primary__o7qgw style_font-700__9q48B">Your Current Rank</p>
               <p className="style_text__Z44aT style_md__ZQhe4">
-                <img alt="Crab" loading="lazy" width="24" height="24" decoding="async" data-nimg="1" src="https://purchase3.blockdag.network/images/ranks/crab.svg" style={{ color: 'transparent' }} />
+                <img alt="Crab" loading="lazy" width="24" height="24" decoding="async" data-nimg="1" src={`https://purchase3.blockdag.network/images/ranks/${currentRank?.toLowerCase()}.svg`} style={{ color: 'transparent' }} />
                 <span className="style_text__Z44aT style_md__ZQhe4"> {profile["Current Rank"] || "No Rank"} - Level 1</span>
               </p>
             </div>
             <div className="profile_info__hpTVz">
               <p className="style_text__Z44aT style_sm__RimS5 style_primary__o7qgw style_font-700__9q48B">Next Rank</p>
               <p className="style_text__Z44aT style_md__ZQhe4">
-                <img alt="Turtle" loading="lazy" width="24" height="24" decoding="async" data-nimg="1" src="https://purchase3.blockdag.network/images/ranks/turtle.svg" style={{ color: 'transparent' }} />
+                <img alt="Turtle" loading="lazy" width="24" height="24" decoding="async" data-nimg="1" src={`https://purchase3.blockdag.network/images/ranks/${nextRank?.toLowerCase()}.svg`} style={{ color: 'transparent' }} />
                 <span className="style_text__Z44aT style_md__ZQhe4">{profile["Next rank"] || "No Rank"} - 100.0% to next level</span>
               </p>
             </div>
@@ -65,7 +61,7 @@ const Profile = () => {
             </svg>
             <span className="style_text__Z44aT style_sm__RimS5">
               You need <span className="style_text__Z44aT style_sm__RimS5 style_primary__o7qgw">
-                <a href="/#buy">{profile["req to level up"]} more BDAG</a>
+                {profile["req to level up"]} more BDAG
               </span> coins to level up.
             </span>
           </p>
