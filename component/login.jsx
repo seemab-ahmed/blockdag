@@ -30,8 +30,8 @@ export const Login = () => {
   return (
      <div className="login_login__J2ObG __className_ee1788 modalActive">
   <div className="login_loginBox___rC_f">
-    <div className="login_logo__vPwTd">
-      <span className="logo_logo__cZ2yZ login_logoImg__DF9Mz">
+    <div className="login_logo__vPwTd mobileLogoHover">
+      <span className="logo_logo__cZ2yZ login_logoImg__DF9Mz ">
         <img alt="BlockDAG Logo" loading="lazy" width="163" height="41" decoding="async" data-nimg="1" className="darkorlight dark-mode-visible" src="https://purchase3.blockdag.network/bdag-logo-xl.png" style={{ color: "transparent" }} />
         <img alt="BlockDAG Logo" loading="lazy" width="163" height="41" decoding="async" data-nimg="1" className="darkorlight light-mode-visible" src="https://purchase3.blockdag.network/bdag-logo-xl.png" style={{ color: "transparent" }} />
       </span>
