@@ -23,8 +23,8 @@ const projectId = "21cdeb2da197b288fc649b9305a3aece";
 const metadata = {
   name: "BlockDag",
   description: "BlockDag",
-  url: "https://example.com", // origin must match your domain & subdomain
-  icons: ["https://avatars.githubusercontent.com/u/179229932"],
+  url: "https://blockdag-tau.vercel.app/", // origin must match your domain & subdomain
+  icons: ["https://purchase3.blockdag.network/favicon.png"],
 };
 
 // 3. Set the networks
