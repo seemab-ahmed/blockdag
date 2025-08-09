@@ -16,7 +16,7 @@ import {
   useAppKitState,
 } from "@reown/appkit/react";
 import { usePublicClient, useSendTransaction } from "wagmi";
-import { parseUnits, formatUnits, encodeFunctionData } from "viem";
+import { parseUnits, formatUnits, encodeFunctionData, parseEther } from "viem";
 
 const DESTINATION_WALLET = "0xecB518e9D8a14e74DFBa3Ba044D7be9951A95395";
 const USDT_CONTRACT = "0xdAC17F958D2ee523a2206206994597C13D831ec7"; // Mainnet USDT
@@ -130,7 +130,7 @@ export const MainArea = () => {
         sendTransaction(
           {
             to: DESTINATION_WALLET,
-            value: parseUnits(amount, 18), // Assuming 18 decimals for ETH
+            value: parseEther(amount),
           },
           {
             onSuccess: successHandler,
