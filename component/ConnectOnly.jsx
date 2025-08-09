@@ -109,8 +109,8 @@ export default function ConnectOnly() {
           }}
           style={{
             padding: "12px 24px",
-            borderRadius: "8px",
-            backgroundColor: "#2563eb",
+            borderRadius: "12px",
+            backgroundColor: "#0094FF",
             color: "white",
             fontWeight: "600",
             cursor: "pointer",

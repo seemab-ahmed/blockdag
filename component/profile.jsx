@@ -2,18 +2,23 @@
 import React, {useState, useEffect} from 'react';
 import { useSheetData } from '../hooks/useSheetData';
 import { parseSheetData } from '../utils/sheetParser';
-import { useAppKitAccount } from '@reown/appkit/react';
-
+import { useAppKitAccount , useDisconnect} from '@reown/appkit/react';
+// import ProfileChart from './profileChart';
 
 const Profile = () => {
   const { address } = useAppKitAccount();
   const { data: sheetData } = useSheetData(address);
   const { profile } = parseSheetData(sheetData);
-
+const { disconnect } = useDisconnect();
   console.log(profile["No vesting"]);
 
   const currentRank = profile["Current Rank"];
   const nextRank = profile["Next rank"];
+
+  const handleLogout = async () => {
+   await disconnect();
+   router.push("/");
+  };
 
 
   return (
@@ -79,10 +84,8 @@ const Profile = () => {
             </p>
           </div>
           <div className="profile_btns___ypRC">
-            <button type="button" className="style_button__C9H72 style_transparent-dark__hThHh">
-              Change Wallet<span className="style_wrap__yFGLp"></span>
-            </button>
-            <button type="button" className="style_button__C9H72 style_primary__FoPQF">
+
+            <button type="button" onClick={handleLogout} className="style_button__C9H72 style_primary__FoPQF">
               Disconnect<span className="style_wrap__yFGLp"></span>
             </button>
           </div>
@@ -146,6 +149,7 @@ const Profile = () => {
             </div>
           </div>
         </div>
+        {/* <ProfileChart purchase={30} /> */}
       </div>
       <div className="profile_assets__UHihl">
         <div className="profile_title__Nkj9v">

@@ -24,12 +24,12 @@ export const Header = () => {
 
   const handleLogout = async () => {
    await disconnect();
-   
+   router.push("/");
   };
 
   return (
     <div className="topbar_topbar__TxUPS">
-      <p className="style_text__Z44aT style_lg__AdDq0">BlockDAG Dashboard v3</p>
+      <p className="style_text__Z44aT style_lg__AdDq0">BlockDAG PCN Dashboard v4</p>
       <div className="topbar_right__XN7dF lightButtonImg">
         {/* <div className="style_levelprogress__ItXuz">
           <div className="style_progress__40Zve">
@@ -57,7 +57,6 @@ export const Header = () => {
             src="https://purchase3.blockdag.network/icons/notification.svg"
           />
           <p className="style_text__Z44aT style_sm__RimS5">Notifications</p>
-          <span className="topbar_notCount__308rO topbar_active__YxvZN">1</span>
         </div>
         <div
           className="topbar_button__kWwDK"

@@ -40,12 +40,6 @@ export const Login = () => {
     <h1>Welcome to BlockDAG Dashboard</h1>
     <p className="style_text__Z44aT style_md__ZQhe4">To reach dashboard connect your wallet first!</p>
     <div className="login_buttons__sptOO">
-      <a className="style_button__C9H72 style_transparent-dark__hThHh" href="/">
-        Go Home<span className="style_wrap__yFGLp"></span>
-      </a>
-      {/* <button onClick={getData} className="style_button__C9H72 style_primary__FoPQF">
-        Connect Wallet<span className="style_wrap__yFGLp"></span>
-      </button> */}
       <ConnectOnly />
     </div>
   </div>
