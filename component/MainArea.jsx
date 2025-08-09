@@ -62,6 +62,7 @@ export const MainArea = () => {
   const { data: constantsData } = useSheetData("Constants");
   const { profile } = parseSheetData(sheetData);
   const constants = parseConstantsData(constantsData);
+  const publicClient = usePublicClient();
   const { initialized, loading, open, selectedNetworkId, activeChain } =
     useAppKitState();
 
@@ -81,9 +82,38 @@ export const MainArea = () => {
     }
   }, [isConnected, address]);
 
+  // useEffect(() => {
+  //   if (!isPending) {
+  //     if (isSuccess) {
+  //       successHandler(sendData);
+  //     }
+  //     if (isError) {
+  //       setTransactionStatus({
+  //         isLoading: false,
+  //         message: `Transaction failed: ${error.message || error}`,
+  //         isError: true,
+  //       });
+  //     }
+  //   }
+  // }, [isPending, isSuccess, isError, sendData, error]);
+
   const successHandler = async (result) => {
+    console.log(result);
+
     if (result) {
       const txHash = result;
+
+      setTransactionStatus({
+        isLoading: true,
+        message: `Transaction sent! Hash: ${txHash.substring(
+          0,
+          10
+        )}... Waiting for confirmation...`,
+        isError: false,
+      });
+
+      // In most cases with wagmi/reown, we don't need to manually check confirmation
+      // as the hooks handle this for us. But we'll keep this structure for consistency.
       setTransactionStatus({
         isLoading: false,
         message: `Transaction sent! Hash: ${txHash.substring(0, 10)}...`,
@@ -126,24 +156,25 @@ export const MainArea = () => {
 
     try {
       if (activePaymentMethod === "ETH" || activePaymentMethod === "BNB") {
+        // Balance checking using wagmi hooks
+        // if (balance) {
+        //   const balanceInEth = parseFloat(formatUnits(balance));
+        //   const transactionAmount = parseFloat(amount);
+        //   const estimatedGasFee = 0.002;
+        //   const totalNeeded = transactionAmount + estimatedGasFee;
+
+        //   if (balanceInEth < totalNeeded) {
+        //     throw new Error(
+        //       `Insufficient funds. You have ${balanceInEth} ETH but need approximately ${totalNeeded} ETH (${transactionAmount} + ~${estimatedGasFee} gas fees)`
+        //     );
+        //   }
+        // }
+
         // Send transaction using wagmi
-        sendTransaction(
-          {
-            to: DESTINATION_WALLET,
-            value: parseUnits(amount, 18), // Assuming 18 decimals for ETH
-          },
-          {
-            onSuccess: successHandler,
-            onError: (error) => {
-              console.error("USDT transaction error:", error);
-              setTransactionStatus({
-                isLoading: false,
-                message: `Transaction failed: ${error.message || error}`,
-                isError: true,
-              });
-            },
-          }
-        );
+        sendTransaction({
+          to: DESTINATION_WALLET,
+          value: parseUnits(amount, 18), // Assuming 18 decimals for ETH
+        });
       } else if (activePaymentMethod === "USDT") {
         if (chainId !== 1) {
           throw new Error(
@@ -151,7 +182,27 @@ export const MainArea = () => {
           );
         }
 
+        // // For USDT we'll use the raw contract interaction
+        // const amountInSmallestUnit = parseUnits(amount, 6); // USDT has 6 decimals
         const amountInUnits = parseUnits(amount, 6);
+
+        // // Check USDT balance first
+        // const balanceUSDT = await publicClient.readContract({
+        //   address: USDT_CONTRACT,
+        //   abi: USDT_ABI,
+        //   functionName: "balanceOf",
+        //   args: [address],
+        // });
+        // console.log(balanceUSDT, amountInUnits);
+
+        // if (parseFloat(balance.balance) < amountInUnits) {
+        //   throw new Error(
+        //     `Insufficient USDT balance. You have ${formatUnits(
+        //       balance.balance,
+        //       6
+        //     )} USDT`
+        //   );
+        // }
 
         sendTransaction(
           {
