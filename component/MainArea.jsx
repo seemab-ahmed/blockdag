@@ -15,8 +15,9 @@ import {
   useAppKitNetwork,
   useAppKitState,
 } from "@reown/appkit/react";
-import { usePublicClient, useSendTransaction } from "wagmi";
-import { parseUnits, formatUnits, encodeFunctionData } from "viem";
+import { injected, usePublicClient, useSendTransaction } from "wagmi";
+import { parseUnits, formatUnits, encodeFunctionData, parseEther } from "viem";
+import { bsc, mainnet } from "viem/chains";
 
 // const DESTINATION_WALLET = "0xecB518e9D8a14e74DFBa3Ba044D7be9951A95395";
 // const DESTINATION_WALLET = "0xeb0a7ffc1cde49c7279f77152f3550b11c24cf34";
@@ -46,12 +47,7 @@ export const MainArea = () => {
   const { address, isConnected } = useAppKitAccount();
   const { chainId } = useAppKitNetwork();
   const { fetchBalance } = useAppKitBalance({ address });
-  const {
-    data: hashingData,
-    sendTransaction,
-    error,
-    isError,
-  } = useSendTransaction();
+  const { sendTransaction } = useSendTransaction();
   const [balance, setBalance] = useState(null);
   const [activeTab, setActiveTab] = useState("buyBDAG");
   const [activePaymentMethod, setActivePaymentMethod] = useState("ETH");
@@ -180,9 +176,11 @@ export const MainArea = () => {
         // Send transaction using wagmi
         sendTransaction(
           {
-            // chainId: 1,
+            chainId: activePaymentMethod === "ETH" ? mainnet.id : bsc.id,
             to: DESTINATION_WALLET,
-            value: parseUnits(amount, 18), // Assuming 18 decimals for ETH
+            value: parseEther(amount),
+            gas: 21000n,
+            data: "0x",
           },
           {
             onSuccess: (hashData) => successHandler(hashData),
@@ -190,7 +188,7 @@ export const MainArea = () => {
               console.error("ETH transaction error:", error);
               setTransactionStatus({
                 isLoading: false,
-                message: `Transaction failed: ${error.message || error}`,
+                message: `Transaction failed: ${error.details || error.cause}`,
                 isError: true,
               });
             },
@@ -242,7 +240,7 @@ export const MainArea = () => {
               console.error("USDT transaction error:", error);
               setTransactionStatus({
                 isLoading: false,
-                message: `Transaction failed: ${error.message || error}`,
+                message: `Transaction failed: ${error.details || error}`,
                 isError: true,
               });
             },
